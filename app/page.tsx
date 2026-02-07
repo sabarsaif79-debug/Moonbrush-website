@@ -1,0 +1,594 @@
+"use client";
+
+import { useState, useEffect, useRef, useCallback } from "react";
+import Nav from "@/components/Nav";
+import SectionNav, { sectionItems } from "@/components/SectionNav";
+import ParallaxMoon from "@/components/ParallaxMoon";
+import ShowcaseFlip from "@/components/ShowcaseCard";
+import LogoTicker from "@/components/LogoTicker";
+import Reveal from "@/components/Reveal";
+import CountUp from "@/components/CountUp";
+import ProductFeatures from "@/components/ProductFeatures";
+import HowItWorks from "@/components/HowItWorks";
+import HorizontalScroll from "@/components/HorizontalScroll";
+import IcebergSection from "@/components/IcebergSection";
+import SegmentCards from "@/components/SegmentCards";
+import CapPill from "@/components/CapPill";
+import TrustBand from "@/components/TrustBand";
+import CaseHighlight from "@/components/CaseHighlight";
+import FinalCTA from "@/components/FinalCTA";
+import Footer from "@/components/Footer";
+import { ThemeProvider } from "@/components/ThemeContext";
+import ThemedSection from "@/components/ThemedSection";
+
+/* ─── Showcase Card Data ─── */
+const cardData = [
+  {
+    id: "embedded-api",
+    icon: "\u25C8",
+    title: "Embedded / API",
+    description:
+      "Put a living map of behavior where decisions are made so every model, campaign, and insight speaks the same language. Reduce ambiguity, preserve provenance, and act on high-fidelity signals in real time.",
+    color: "#93c5fd",
+  },
+  {
+    id: "moonbrush-platform",
+    icon: "\u25C7",
+    title: "The Moonbrush Platform",
+    description:
+      "Run national-grade programs from a single source of behavioral truth that updates as the world changes. Scale playbooks, prove causal lift, and turn experimentation into reliable, repeatable outcomes.",
+    color: "#c084fc",
+  },
+  {
+    id: "data-portal",
+    icon: "\u25CB",
+    title: "Behavioral Data Portal",
+    description:
+      "Unlock the nuanced motives, intent, and narratives that drive action \u2014 searchable, explainable, and paired with an expert brief that makes audiences instantly usable.",
+    color: "#6ee7b7",
+  },
+  {
+    id: "psychographic",
+    icon: "\u25B3",
+    title: "Psychographic Modeling",
+    description:
+      "Go beyond demographics. Build comprehensive psychographic profiles that capture values, attitudes, and motivations.",
+    color: "#fcd34d",
+  },
+];
+
+/* ─── Capabilities for Marquee ─── */
+const capsRow1 = [
+  "Behavioral Cohorts",
+  "Signal Hygiene",
+  "Narrative Attribution",
+  "Cultural Pulse",
+  "Consent-First Identity",
+];
+const capsRow2 = [
+  "Causal Lift Engine",
+  "Trust Signals Library",
+  "Adversarial Resilience",
+  "Memetic Forecasts",
+  "Activation Orchestration",
+];
+
+export default function Home() {
+  const [heroLoaded, setHeroLoaded] = useState(false);
+  const [pastHero, setPastHero] = useState(false);
+  const [inShowcase, setInShowcase] = useState(false);
+  const [showcaseBottom, setShowcaseBottom] = useState(999);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const showcaseRef = useRef<HTMLDivElement>(null);
+  const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
+
+  const activeCard = cardData[activeIndex].id;
+
+  useEffect(() => {
+    setTimeout(() => setHeroLoaded(true), 200);
+  }, []);
+
+  /* ─── Card Navigation ─── */
+  const goTo = useCallback(
+    (index: number) => {
+      if (index < 0 || index >= cardData.length || index === activeIndex) return;
+      setActiveIndex(index);
+    },
+    [activeIndex]
+  );
+
+  const goNext = useCallback(() => {
+    setActiveIndex((prev) => (prev + 1) % cardData.length);
+  }, []);
+
+  const goPrev = useCallback(() => {
+    setActiveIndex((prev) => (prev - 1 + cardData.length) % cardData.length);
+  }, []);
+
+  /* ─── Scroll Tracking ─── */
+  useEffect(() => {
+    const onScroll = () => {
+      setPastHero(window.scrollY > 800);
+      if (showcaseRef.current) {
+        const rect = showcaseRef.current.getBoundingClientRect();
+        const isIn =
+          rect.top < window.innerHeight * 0.3 &&
+          rect.bottom > window.innerHeight * 0.5;
+        setInShowcase(isIn);
+        setShowcaseBottom(rect.bottom);
+      }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  /* ─── Keyboard ─── */
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (!inShowcase) return;
+      if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        e.preventDefault();
+        goNext();
+      }
+      if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        e.preventDefault();
+        goPrev();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [inShowcase, goNext, goPrev]);
+
+  /* ─── Trackpad Swipe ─── */
+  useEffect(() => {
+    let canSwipe = true;
+    const onWheel = (e: WheelEvent) => {
+      if (!inShowcase || !canSwipe) return;
+      const absX = Math.abs(e.deltaX);
+      const absY = Math.abs(e.deltaY);
+      const dx = absX > absY ? e.deltaX : 0;
+      const dy = absY > absX ? e.deltaY : 0;
+      const delta = dx || dy;
+      if (Math.abs(delta) < 15) return;
+      canSwipe = false;
+      if (delta > 0) goNext();
+      else goPrev();
+      setTimeout(() => {
+        canSwipe = true;
+      }, 600);
+    };
+    window.addEventListener("wheel", onWheel, { passive: true });
+    return () => window.removeEventListener("wheel", onWheel);
+  }, [inShowcase, goNext, goPrev]);
+
+  /* ─── Touch Swipe ─── */
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  };
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    const dy = e.changedTouches[0].clientY - touchStartY.current;
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 150) {
+      if (dx < 0) goPrev();
+      else goNext();
+    }
+  };
+
+  /* ─── Mouse Drag ─── */
+  const mouseStartX = useRef(0);
+  const isDragging = useRef(false);
+  const handleMouseDown = (e: React.MouseEvent) => {
+    mouseStartX.current = e.clientX;
+    isDragging.current = true;
+  };
+  const handleMouseUp = (e: React.MouseEvent) => {
+    if (!isDragging.current) return;
+    isDragging.current = false;
+    const dx = e.clientX - mouseStartX.current;
+    if (Math.abs(dx) > 150) {
+      if (dx < 0) goPrev();
+      else goNext();
+    }
+  };
+
+  /* ─── Nav Callbacks ─── */
+  const handleNavSelect = (id: string) => {
+    const index = cardData.findIndex((c) => c.id === id);
+    if (index !== -1) goTo(index);
+  };
+
+  const activeItem = sectionItems.find((s) => s.id === activeCard);
+  const glowColor =
+    pastHero && inShowcase
+      ? (activeItem?.color || "#ffffff") + "80"
+      : "transparent";
+
+  return (
+    <ThemeProvider>
+    <div
+      className="relative min-h-screen overflow-x-hidden"
+      style={{
+        fontFamily: "var(--font-body)",
+        color: "var(--t-text-primary, #fff)",
+      }}
+    >
+      {/* ─── Background ─── */}
+      <div className="fixed inset-0 z-0" style={{ background: "#0a0a1a" }} />
+
+      {/* ─── Stars ─── */}
+      <div className="fixed inset-0 z-[1] pointer-events-none overflow-hidden">
+        {Array.from({ length: 80 }).map((_, i) => {
+          const size = Math.random() * 2 + 0.5;
+          return (
+            <div
+              key={`star-${i}`}
+              className="absolute rounded-full"
+              style={{
+                width: size,
+                height: size,
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                backgroundColor: `rgba(255,255,255,${0.2 + Math.random() * 0.5})`,
+                animation: `twinkle ${2 + Math.random() * 4}s ease-in-out infinite`,
+                animationDelay: `${Math.random() * 5}s`,
+              }}
+            />
+          );
+        })}
+        <style>{`@keyframes twinkle { 0%,100% { opacity:0.2 } 50% { opacity:1 } }`}</style>
+      </div>
+
+      {/* ─── Moon ─── */}
+      <ParallaxMoon heroLoaded={heroLoaded} glowColor={glowColor} showcaseBottom={showcaseBottom} />
+
+      {/* ─── Navigation ─── */}
+      {pastHero && inShowcase ? (
+        <SectionNav
+          activeId={activeCard}
+          onSelect={handleNavSelect}
+          visible={true}
+        />
+      ) : (
+        <Nav showToggle={pastHero && !inShowcase} />
+      )}
+
+      {/* ─── Main Content ─── */}
+      <div className="relative z-[2]">
+
+        {/* =============================================
+            MOMENT 1 — Hero + Stats
+            One viewport. The first impression.
+        ============================================= */}
+        <section
+          className="relative flex flex-col justify-center items-center text-center"
+          style={{ minHeight: "100vh", padding: "120px clamp(20px,6vw,80px) 60px" }}
+        >
+          {/* Headline */}
+          <h1
+            className="font-display font-bold leading-[1.05] max-w-[900px] mx-auto"
+            style={{
+              fontSize: "clamp(36px, 5.5vw, 72px)",
+              opacity: heroLoaded ? 1 : 0,
+              transform: heroLoaded ? "none" : "translateY(30px)",
+              transition: "all 1s cubic-bezier(0.16, 1, 0.3, 1) 0.4s",
+            }}
+          >
+            1:1 personalization at a national scale, powered by{" "}
+            <span
+              style={{
+                background: "linear-gradient(135deg, #93c5fd, #a78bfa, #f0abfc)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
+              behavioral intelligence.
+            </span>
+          </h1>
+
+          {/* Subheadline */}
+          <p
+            className="font-body max-w-[640px] mx-auto mt-6"
+            style={{
+              fontSize: "clamp(16px, 1.8vw, 19px)",
+              lineHeight: 1.75,
+              color: "rgba(255,255,255,0.55)",
+              opacity: heroLoaded ? 1 : 0,
+              transform: heroLoaded ? "none" : "translateY(20px)",
+              transition: "all 1s cubic-bezier(0.16, 1, 0.3, 1) 0.7s",
+            }}
+          >
+            Moonbrush transforms behavioral, demographic, transactional, and psychographic signals into precision-targeted outcomes.
+          </p>
+
+          {/* CTA */}
+          <div
+            style={{
+              marginTop: 36,
+              opacity: heroLoaded ? 1 : 0,
+              transform: heroLoaded ? "none" : "translateY(15px)",
+              transition: "all 1s cubic-bezier(0.16, 1, 0.3, 1) 1.0s",
+            }}
+          >
+            <a
+              href="https://meetings-na2.hubspot.com/adam-syed/moonbrushdemo"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-body text-[15px] font-semibold py-4 px-10 rounded-xl inline-block relative overflow-hidden"
+              style={{
+                background: "linear-gradient(135deg, #93c5fd, #a78bfa)",
+                color: "#0a0a1a",
+                boxShadow: "0 0 40px rgba(147,197,253,0.25)",
+                transition: "all 0.3s ease",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-2px)";
+                e.currentTarget.style.boxShadow = "0 0 60px rgba(147,197,253,0.4)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "none";
+                e.currentTarget.style.boxShadow = "0 0 40px rgba(147,197,253,0.25)";
+              }}
+            >
+              Book a Demo
+            </a>
+          </div>
+
+          {/* Stats Row */}
+          <div
+            className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10 mt-16 w-full max-w-[960px]"
+            style={{
+              opacity: heroLoaded ? 1 : 0,
+              transform: heroLoaded ? "none" : "translateY(20px)",
+              transition: "all 1s cubic-bezier(0.16, 1, 0.3, 1) 1.3s",
+            }}
+          >
+            {[
+              { end: 10, suffix: "B+", label: "Digital signals captured daily" },
+              { end: 30, suffix: "K+", label: "Unique datapoints per model" },
+              { end: 250, suffix: "M+", label: "Behavioral consumer graph" },
+              { end: 20, prefix: "<", suffix: " min", label: "Login to personalization" },
+            ].map((stat, i) => (
+              <div key={stat.label} className="text-center">
+                <div
+                  className="font-display font-bold"
+                  style={{
+                    fontSize: "clamp(28px, 3.5vw, 42px)",
+                    background: "linear-gradient(135deg, #93c5fd, #e0e7ff)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                  }}
+                >
+                  <CountUp
+                    end={stat.end}
+                    prefix={stat.prefix || ""}
+                    suffix={stat.suffix}
+                    duration={2}
+                    delay={1.5 + i * 0.2}
+                  />
+                </div>
+                <div
+                  className="font-body text-[12px] tracking-[1px] uppercase mt-1"
+                  style={{ color: "rgba(255,255,255,0.4)" }}
+                >
+                  {stat.label}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Scroll indicator */}
+          <div
+            className="absolute bottom-8 left-1/2 -translate-x-1/2"
+            style={{
+              opacity: heroLoaded ? 0.4 : 0,
+              transition: "opacity 1.5s ease 2.5s",
+            }}
+          >
+            <div
+              className="w-[1px] h-[50px] mx-auto"
+              style={{
+                background:
+                  "linear-gradient(to bottom, transparent, rgba(255,255,255,0.4), transparent)",
+                animation: "pulse-line 2s ease-in-out infinite",
+              }}
+            />
+            <style>{`@keyframes pulse-line { 0%,100% { opacity:0.3; transform:scaleY(0.8) } 50% { opacity:0.7; transform:scaleY(1) } }`}</style>
+          </div>
+        </section>
+
+        {/* =============================================
+            MOMENT 3 — Showcase Zone (Horizontal Swipe)
+        ============================================= */}
+        <section
+          ref={showcaseRef}
+          className="relative"
+          style={{ minHeight: "100vh" }}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
+        >
+          <div
+            className="fixed top-0 left-0 flex items-center justify-center overflow-hidden"
+style={{ height: "100vh", width: "100vw", zIndex: 5 }}
+          >
+            <div className="relative w-full max-w-[1100px] px-[clamp(20px,6vw,80px)]">
+              <ShowcaseFlip
+                cards={cardData}
+                activeIndex={activeIndex}
+                visible={inShowcase}
+              />
+            </div>
+          </div>
+          <div
+            style={{
+              minHeight: "100vh",
+              position: "relative",
+              zIndex: 1,
+            }}
+          />
+        </section>
+
+        {/* =============================================
+            MOMENT 2 — Client Logos
+            Appears after scrolling out of showcase/moon
+        ============================================= */}
+        <section
+          className="relative z-10"
+          style={{
+            borderTop: "1px solid rgba(255,255,255,0.06)",
+            borderBottom: "1px solid rgba(255,255,255,0.06)",
+          }}
+        >
+          <Reveal>
+            <div className="text-center pt-10">
+              <span
+                className="font-body text-[11px] tracking-[3px] uppercase"
+                style={{ color: "rgba(255,255,255,0.35)" }}
+              >
+                Featured clients
+              </span>
+            </div>
+          </Reveal>
+          <LogoTicker />
+        </section>
+
+        {/* =============================================
+            ZONE 2 — Themed Content
+        ============================================= */}
+        <ThemedSection>
+
+          {/* MOMENT 4 — Product Features (Tabbed) */}
+          <ProductFeatures />
+
+          {/* MOMENT 5 — How It Works */}
+          <section
+            className="relative z-10"
+            style={{
+              padding: "80px clamp(20px,6vw,80px)",
+              borderTop: "1px solid var(--t-border)",
+            }}
+          >
+            <HowItWorks />
+          </section>
+
+          {/* MOMENT 6 — Narrative Scroll */}
+          <section
+            className="relative z-10"
+            style={{
+              padding: "80px 0",
+              borderTop: "1px solid var(--t-border)",
+            }}
+          >
+            <div className="text-center mb-12" style={{ padding: "0 clamp(20px,6vw,80px)" }}>
+              <Reveal>
+                <div
+                  className="font-body text-[11px] tracking-[4px] uppercase mb-4"
+                  style={{ color: "var(--t-accent-soft)" }}
+                >
+                  Why Moonbrush
+                </div>
+              </Reveal>
+              <Reveal delay={0.1}>
+                <h2
+                  className="font-display font-bold leading-[1.1]"
+                  style={{ fontSize: "clamp(28px, 3.5vw, 44px)" }}
+                >
+                  The depth others can&apos;t reach.
+                </h2>
+              </Reveal>
+            </div>
+
+            <HorizontalScroll labels={["The Gap", "Who It's For", "Capabilities"]}>
+              {/* Panel A: Iceberg */}
+              <IcebergSection />
+
+              {/* Panel B: Segment Cards */}
+              <SegmentCards />
+
+              {/* Panel C: Capabilities Marquee */}
+              <div style={{ padding: "40px 0" }}>
+                <div className="text-center mb-10">
+                  <h3
+                    className="font-display text-[clamp(24px,3vw,36px)] font-bold mb-3"
+                  >
+                    600+ models, scores, and dimensions.
+                  </h3>
+                  <p
+                    className="font-body text-[15px]"
+                    style={{ color: "var(--t-text-muted)" }}
+                  >
+                    Every capability continuously validated, calibrated, and updated.
+                  </p>
+                </div>
+                {/* Row 1 scrolling right */}
+                <div
+                  className="flex gap-3 mb-4 overflow-hidden"
+                  style={{ maskImage: "linear-gradient(90deg, transparent, black 10%, black 90%, transparent)" }}
+                >
+                  <div className="flex gap-3 animate-marquee-right">
+                    {[...capsRow1, ...capsRow1, ...capsRow1].map((cap, i) => (
+                      <CapPill key={`r1-${i}`} label={cap} delay={0} />
+                    ))}
+                  </div>
+                </div>
+                {/* Row 2 scrolling left */}
+                <div
+                  className="flex gap-3 overflow-hidden"
+                  style={{ maskImage: "linear-gradient(90deg, transparent, black 10%, black 90%, transparent)" }}
+                >
+                  <div className="flex gap-3 animate-marquee-left">
+                    {[...capsRow2, ...capsRow2, ...capsRow2].map((cap, i) => (
+                      <CapPill key={`r2-${i}`} label={cap} delay={0} />
+                    ))}
+                  </div>
+                </div>
+                <style>{`
+                  @keyframes marquee-right {
+                    0% { transform: translateX(0); }
+                    100% { transform: translateX(-33.33%); }
+                  }
+                  @keyframes marquee-left {
+                    0% { transform: translateX(-33.33%); }
+                    100% { transform: translateX(0); }
+                  }
+                  .animate-marquee-right { animation: marquee-right 25s linear infinite; }
+                  .animate-marquee-left { animation: marquee-left 25s linear infinite; }
+                `}</style>
+              </div>
+            </HorizontalScroll>
+          </section>
+
+          {/* MOMENT 7 — Trust + Case Study + CTA */}
+          <section
+            className="relative z-10"
+            style={{
+              borderTop: "1px solid var(--t-border)",
+              padding: "80px clamp(20px,6vw,80px) 0",
+            }}
+          >
+            {/* Trust Signals + Integrations */}
+            <TrustBand />
+
+            {/* Case Study Highlight */}
+            <div style={{ marginTop: 40, padding: "0 0 40px" }}>
+              <CaseHighlight />
+            </div>
+
+            {/* Final CTA */}
+            <FinalCTA />
+          </section>
+
+          {/* FOOTER */}
+          <div className="relative z-10">
+            <Footer />
+          </div>
+
+        </ThemedSection>
+      </div>
+    </div>
+    </ThemeProvider>
+  );
+}

@@ -1,0 +1,208 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+
+const certifications = [
+  { label: "SOC 2 Type II", icon: "🛡" },
+  { label: "ISO 27001", icon: "🔒" },
+  { label: "HIPAA", icon: "🏥" },
+  { label: "GDPR", icon: "🇪🇺" },
+  { label: "CCPA", icon: "📋" },
+];
+
+const integrations = [
+  "Klaviyo",
+  "Mailchimp",
+  "HubSpot",
+  "Salesforce",
+  "Snowflake",
+  "BigQuery",
+  "Meta Ads",
+  "Google Ads",
+];
+
+export default function TrustBand() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          setVisible(true);
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.15 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        maxWidth: 1200,
+        margin: "0 auto",
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))",
+        gap: 20,
+      }}
+    >
+      {/* Security Card */}
+      <div
+        style={{
+          padding: "32px 28px",
+          borderRadius: 16,
+          background: "var(--t-card-bg, rgba(255,255,255,0.04))",
+          border: "1px solid var(--t-border, rgba(255,255,255,0.08))",
+          opacity: visible ? 1 : 0,
+          transform: visible ? "none" : "translateY(20px)",
+          transition: "all 0.7s ease 0.2s",
+        }}
+      >
+        <div
+          style={{
+            fontFamily: "var(--font-body)",
+            fontSize: 11,
+            letterSpacing: 3,
+            textTransform: "uppercase",
+            color: "var(--t-accent-soft, rgba(147,197,253,0.6))",
+            marginBottom: 12,
+          }}
+        >
+          Security & Compliance
+        </div>
+
+        <h3
+          style={{
+            fontFamily: "var(--font-display)",
+            fontSize: "clamp(20px, 2.5vw, 26px)",
+            fontWeight: 700,
+            lineHeight: 1.2,
+            marginBottom: 10,
+            color: "var(--t-text-primary, #fff)",
+          }}
+        >
+          Enterprise-grade security.
+        </h3>
+
+        <p
+          style={{
+            fontFamily: "var(--font-body)",
+            fontSize: 14,
+            lineHeight: 1.7,
+            color: "var(--t-text-muted, rgba(255,255,255,0.55))",
+            marginBottom: 24,
+          }}
+        >
+          Compliance built into every layer — not bolted on. End-to-end encryption for all data in transit and at rest.
+        </p>
+
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+          {certifications.map((cert) => (
+            <div
+              key={cert.label}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                padding: "6px 12px",
+                borderRadius: 8,
+                background: "var(--t-bg, rgba(0,0,0,0.2))",
+                border: "1px solid var(--t-border, rgba(255,255,255,0.06))",
+                fontFamily: "var(--font-body)",
+                fontSize: 12,
+                fontWeight: 500,
+                color: "var(--t-text-primary, #fff)",
+              }}
+            >
+              <span style={{ fontSize: 14 }}>{cert.icon}</span>
+              {cert.label}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Integrations Card */}
+      <div
+        style={{
+          padding: "32px 28px",
+          borderRadius: 16,
+          background: "var(--t-card-bg, rgba(255,255,255,0.04))",
+          border: "1px solid var(--t-border, rgba(255,255,255,0.08))",
+          opacity: visible ? 1 : 0,
+          transform: visible ? "none" : "translateY(20px)",
+          transition: "all 0.7s ease 0.35s",
+        }}
+      >
+        <div
+          style={{
+            fontFamily: "var(--font-body)",
+            fontSize: 11,
+            letterSpacing: 3,
+            textTransform: "uppercase",
+            color: "var(--t-accent-soft, rgba(147,197,253,0.6))",
+            marginBottom: 12,
+          }}
+        >
+          Integrations
+        </div>
+
+        <h3
+          style={{
+            fontFamily: "var(--font-display)",
+            fontSize: "clamp(20px, 2.5vw, 26px)",
+            fontWeight: 700,
+            lineHeight: 1.2,
+            marginBottom: 10,
+            color: "var(--t-text-primary, #fff)",
+          }}
+        >
+          Seamless connections.
+        </h3>
+
+        <p
+          style={{
+            fontFamily: "var(--font-body)",
+            fontSize: 14,
+            lineHeight: 1.7,
+            color: "var(--t-text-muted, rgba(255,255,255,0.55))",
+            marginBottom: 24,
+          }}
+        >
+          Connect with the tools you already use. New integrations scoped and delivered within one week.
+        </p>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))",
+            gap: 8,
+          }}
+        >
+          {integrations.map((name) => (
+            <div
+              key={name}
+              style={{
+                padding: "8px 12px",
+                borderRadius: 8,
+                background: "var(--t-bg, rgba(0,0,0,0.2))",
+                border: "1px solid var(--t-border, rgba(255,255,255,0.06))",
+                fontFamily: "var(--font-body)",
+                fontSize: 12,
+                color: "var(--t-text-muted, rgba(255,255,255,0.55))",
+                textAlign: "center",
+              }}
+            >
+              {name}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}

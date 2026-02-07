@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap');
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+ body {
+  @apply bg-bg text-text-primary antialiased;
+}
+
+  ::selection {
+    background: rgba(147, 197, 253, 0.3);
+    color: #fff;
+  }
+
+  @keyframes twinkle {
+  0% { opacity: 0.1; }
+  100% { opacity: 0.6; }
+}
+}
