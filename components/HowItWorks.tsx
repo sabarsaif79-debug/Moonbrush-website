@@ -9,7 +9,7 @@ const layers = [
     subtitle: "Governance & Trust Foundation",
     description:
       "First-party, second-party, and third-party data streams. SOC 2, ISO 27001, HIPAA, GDPR, CCPA compliant from day one.",
-    color: "#4b5563", // gray
+    color: "#4b5563",
     items: ["CSV / Database / Warehouse", "CRM Integrations", "Privacy & Compliance"],
   },
   {
@@ -18,7 +18,7 @@ const layers = [
     subtitle: "Identity Resolution",
     description:
       "289M+ consumer profiles. Multi-key identity matching at 98%+ accuracy. Hundreds of behavioral dimensions per individual.",
-    color: "#7c3aed", // violet
+    color: "#7c3aed",
     items: ["Consumer Graph (289M+)", "Identity Resolution", "Predictive Columns"],
   },
   {
@@ -26,8 +26,8 @@ const layers = [
     title: "Decisioning",
     subtitle: "Modeling Fabric",
     description:
-      "181 behavioral models. 342 psychographic scales. Custom models via the Builder. The Playbook engine with 54 dimensions.",
-    color: "#6366f1", // indigo
+      "181 behavioral models across 11 lens categories. Custom models via the Builder. The Playbook engine with 54 dimensions and 1,000+ options.",
+    color: "#6366f1",
     items: ["Builder (Models & Segments)", "Workshop (12 Lenses)", "Playbook Engine (54 Dimensions)"],
   },
   {
@@ -36,10 +36,61 @@ const layers = [
     subtitle: "What the World Sees",
     description:
       "PRISM dynamic personalization. Cross-channel activation via DSP, email, SMS, and direct mail. One-to-one creative at scale.",
-    color: "#93c5fd", // blue
-    items: ["PRISM (245+ Messaging Atoms)", "Multi-Channel Activation", "1:1 Personalized Creative"],
+    color: "#3b82f6",
+    items: ["PRISM (130+ Messaging Atoms)", "Multi-Channel Activation", "1:1 Personalized Creative"],
   },
 ];
+
+/* ─── Ping-Pong Video ─── */
+function PingPongVideo() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const directionRef = useRef<"forward" | "backward">("forward");
+  const rafRef = useRef<number>(0);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const handleEnded = () => {
+      directionRef.current = "backward";
+      const step = () => {
+        if (!video) return;
+        video.currentTime = Math.max(0, video.currentTime - 0.033);
+        if (video.currentTime <= 0.05) {
+          directionRef.current = "forward";
+          video.currentTime = 0;
+          video.play();
+          return;
+        }
+        rafRef.current = requestAnimationFrame(step);
+      };
+      video.pause();
+      rafRef.current = requestAnimationFrame(step);
+    };
+
+    video.addEventListener("ended", handleEnded);
+    return () => {
+      video.removeEventListener("ended", handleEnded);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
+
+  return (
+    <video
+      ref={videoRef}
+      src="/clockwise.mp4"
+      autoPlay
+      muted
+      playsInline
+      style={{
+        width: "100%",
+        height: "auto",
+        borderRadius: 16,
+        display: "block",
+      }}
+    />
+  );
+}
 
 export default function HowItWorks() {
   const ref = useRef<HTMLDivElement>(null);
@@ -54,7 +105,6 @@ export default function HowItWorks() {
         if (e.isIntersecting) {
           setVisible(true);
           obs.disconnect();
-          // Stagger layer reveals
           layers.forEach((_, i) => {
             setTimeout(() => setActiveLayer(i), 400 + i * 350);
           });
@@ -120,29 +170,60 @@ export default function HowItWorks() {
         </p>
       </div>
 
-      {/* Layers stack — builds bottom to top */}
+      {/* Two-column: Cards + Video */}
       <div
+        className="hiw-grid"
         style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 12,
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: 32,
+          alignItems: "center",
         }}
       >
-        {[...layers].reverse().map((layer, visualIndex) => {
-          const dataIndex = layers.length - 1 - visualIndex;
-          const isRevealed = activeLayer >= dataIndex;
-          const isHovered = false; // controlled per-element
+        {/* Left: Layer cards */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 8,
+          }}
+        >
+          {[...layers].reverse().map((layer, visualIndex) => {
+            const dataIndex = layers.length - 1 - visualIndex;
+            const isRevealed = activeLayer >= dataIndex;
 
-          return (
-            <LayerCard
-              key={layer.number}
-              layer={layer}
-              revealed={isRevealed}
-              delay={visualIndex * 0.08}
-            />
-          );
-        })}
+            return (
+              <LayerCard
+                key={layer.number}
+                layer={layer}
+                revealed={isRevealed}
+                delay={visualIndex * 0.08}
+              />
+            );
+          })}
+        </div>
+
+        {/* Right: Ping-pong video */}
+        <div
+          style={{
+            opacity: visible ? 1 : 0,
+            transform: visible ? "none" : "translateX(30px)",
+            transition: "all 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s",
+            minHeight: 300,
+          }}
+        >
+          <PingPongVideo />
+        </div>
       </div>
+
+      {/* Responsive style */}
+      <style>{`
+        @media (max-width: 768px) {
+          .hiw-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
 
       {/* CTA */}
       <div
@@ -189,107 +270,141 @@ function LayerCard({
   const [hovered, setHovered] = useState(false);
 
   return (
+    /* Outer wrapper — fixed height, never moves */
     <div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
       style={{
-        display: "grid",
-        gridTemplateColumns: "60px 1fr",
-        gap: 20,
-        padding: "20px 24px",
-        borderRadius: 14,
-        background: hovered
-          ? "var(--t-card-bg, rgba(255,255,255,0.06))"
-          : "var(--t-card-bg, rgba(255,255,255,0.03))",
-        border: `1px solid ${revealed ? layer.color + "25" : "var(--t-border, rgba(255,255,255,0.05))"}`,
+        height: 72,
+        position: "relative",
         opacity: revealed ? 1 : 0,
         transform: revealed ? "none" : "translateY(20px) scale(0.98)",
-        transition: `all 0.6s cubic-bezier(0.16, 1, 0.3, 1) ${delay}s, background 0.3s ease, border-color 0.3s ease`,
-        cursor: "default",
-        alignItems: "center",
+        transition: `all 0.6s cubic-bezier(0.16, 1, 0.3, 1) ${delay}s`,
       }}
     >
-      {/* Layer number */}
+      {/* Inner card — absolute, scales without affecting layout */}
       <div
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
         style={{
-          fontFamily: "var(--font-display)",
-          fontSize: 28,
-          fontWeight: 700,
-          color: layer.color,
-          opacity: 0.7,
-          textAlign: "center",
-          lineHeight: 1,
+          position: "absolute",
+          inset: 0,
+          zIndex: hovered ? 10 : 1,
+          display: "grid",
+          gridTemplateColumns: "44px 1fr",
+          gap: 14,
+          padding: "12px 16px",
+          borderRadius: 10,
+          background: hovered
+            ? "var(--t-card-bg, rgba(255,255,255,0.06))"
+            : "var(--t-card-bg, rgba(255,255,255,0.03))",
+          border: `1px solid ${revealed ? layer.color + "25" : "var(--t-border, rgba(255,255,255,0.05))"}`,
+          cursor: "default",
+          alignItems: "center",
+          transform: hovered ? "scale(1.03)" : "scale(1)",
+          boxShadow: hovered
+            ? `0 0 24px ${layer.color}20, 0 0 48px ${layer.color}12`
+            : "none",
+          transition:
+            "transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease, border-color 0.3s ease",
+          overflow: "hidden",
         }}
       >
-        {layer.number}
-      </div>
-
-      {/* Content */}
-      <div>
+        {/* Layer number */}
         <div
           style={{
-            display: "flex",
-            alignItems: "baseline",
-            gap: 10,
-            marginBottom: 6,
-            flexWrap: "wrap",
+            fontFamily: "var(--font-display)",
+            fontSize: 22,
+            fontWeight: 700,
+            color: layer.color,
+            opacity: hovered ? 1 : 0.7,
+            textAlign: "center",
+            lineHeight: 1,
+            transition: "opacity 0.3s ease",
           }}
         >
-          <h3
-            style={{
-              fontFamily: "var(--font-display)",
-              fontSize: "clamp(16px, 1.8vw, 20px)",
-              fontWeight: 700,
-              color: "var(--t-text-primary, #fff)",
-              margin: 0,
-            }}
-          >
-            {layer.title}
-          </h3>
-          <span
-            style={{
-              fontFamily: "var(--font-body)",
-              fontSize: 12,
-              color: "var(--t-text-faint, rgba(255,255,255,0.35))",
-            }}
-          >
-            {layer.subtitle}
-          </span>
+          {layer.number}
         </div>
 
-        <p
-          style={{
-            fontFamily: "var(--font-body)",
-            fontSize: 13,
-            lineHeight: 1.6,
-            color: "var(--t-text-muted, rgba(255,255,255,0.5))",
-            margin: "0 0 10px",
-            maxHeight: hovered ? 100 : 0,
-            overflow: "hidden",
-            opacity: hovered ? 1 : 0,
-            transition: "all 0.4s ease",
-          }}
-        >
-          {layer.description}
-        </p>
-
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-          {layer.items.map((item) => (
-            <span
-              key={item}
+        {/* Content */}
+        <div style={{ overflow: "hidden" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "baseline",
+              gap: 8,
+              marginBottom: 4,
+              flexWrap: "wrap",
+            }}
+          >
+            <h3
               style={{
-                fontFamily: "var(--font-body)",
-                fontSize: 11,
-                padding: "3px 10px",
-                borderRadius: 20,
-                background: layer.color + "12",
+                fontFamily: "var(--font-display)",
+                fontSize: "clamp(13px, 1.4vw, 16px)",
+                fontWeight: 700,
                 color: layer.color,
-                border: `1px solid ${layer.color}20`,
+                margin: 0,
               }}
             >
-              {item}
+              {layer.title}
+            </h3>
+            <span
+              style={{
+                fontFamily: "var(--font-body)",
+                fontSize: 10,
+                color: "var(--t-text-faint, rgba(255,255,255,0.35))",
+              }}
+            >
+              {layer.subtitle}
             </span>
-          ))}
+          </div>
+
+          {/* Description — visible on hover */}
+          <p
+            style={{
+              fontFamily: "var(--font-body)",
+              fontSize: 11,
+              lineHeight: 1.5,
+              color: layer.color,
+              margin: 0,
+              opacity: hovered ? 0.75 : 0,
+              maxHeight: hovered ? 60 : 0,
+              overflow: "hidden",
+              transition:
+                "opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.05s, max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+            }}
+          >
+            {layer.description}
+          </p>
+
+          {/* Tags — hidden on hover */}
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 4,
+              opacity: hovered ? 0 : 1,
+              maxHeight: hovered ? 0 : 40,
+              overflow: "hidden",
+              transition:
+                "opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
+            }}
+          >
+            {layer.items.map((item) => (
+              <span
+                key={item}
+                style={{
+                  fontFamily: "var(--font-body)",
+                  fontSize: 10,
+                  padding: "2px 8px",
+                  borderRadius: 20,
+                  background: layer.color + "12",
+                  color: layer.color,
+                  border: `1px solid ${layer.color}20`,
+                }}
+              >
+                {item}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
     </div>

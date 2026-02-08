@@ -17,8 +17,8 @@ const integrations = [
   "Salesforce",
   "Snowflake",
   "BigQuery",
-  "Meta Ads",
-  "Google Ads",
+  "Redshift",
+  "S3 / Azure",
 ];
 
 export default function TrustBand() {
@@ -199,6 +199,81 @@ export default function TrustBand() {
               }}
             >
               {name}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Pricing Card */}
+      <div
+        style={{
+          padding: "32px 28px",
+          borderRadius: 16,
+          background: "var(--t-card-bg, rgba(255,255,255,0.04))",
+          border: "1px solid var(--t-border, rgba(255,255,255,0.08))",
+          gridColumn: "1 / -1",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: 20,
+          opacity: visible ? 1 : 0,
+          transform: visible ? "none" : "translateY(20px)",
+          transition: "all 0.7s ease 0.5s",
+        }}
+      >
+        <div style={{ flex: "1 1 300px" }}>
+          <div
+            style={{
+              fontFamily: "var(--font-body)",
+              fontSize: 11,
+              letterSpacing: 3,
+              textTransform: "uppercase",
+              color: "var(--t-accent-soft, rgba(147,197,253,0.6))",
+              marginBottom: 12,
+            }}
+          >
+            Pricing
+          </div>
+          <h3
+            style={{
+              fontFamily: "var(--font-display)",
+              fontSize: "clamp(20px, 2.5vw, 26px)",
+              fontWeight: 700,
+              lineHeight: 1.2,
+              marginBottom: 10,
+              color: "var(--t-text-primary, #fff)",
+            }}
+          >
+            Flat-rate access. No per-record fees.
+          </h3>
+          <p
+            style={{
+              fontFamily: "var(--font-body)",
+              fontSize: 14,
+              lineHeight: 1.7,
+              color: "var(--t-text-muted, rgba(255,255,255,0.55))",
+              margin: 0,
+            }}
+          >
+            No credits, no per-contact charges, no hidden costs. Unlimited access to the full 289M+ consumer graph at a single subscription rate — replacing multiple vendor relationships with one platform.
+          </p>
+        </div>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+          {["No Credits", "No Per-Record Fees", "Unlimited Search"].map((tag) => (
+            <div
+              key={tag}
+              style={{
+                padding: "8px 16px",
+                borderRadius: 8,
+                background: "var(--t-accent, #93c5fd)",
+                color: "var(--t-bg, #0a0a1a)",
+                fontFamily: "var(--font-body)",
+                fontSize: 12,
+                fontWeight: 600,
+              }}
+            >
+              {tag}
             </div>
           ))}
         </div>

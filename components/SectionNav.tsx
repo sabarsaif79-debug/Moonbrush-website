@@ -7,10 +7,10 @@ export interface SectionItem {
 }
 
 export const sectionItems: SectionItem[] = [
-  { label: "Embedded / API", id: "embedded-api", color: "#93c5fd" },
-  { label: "Platform", id: "moonbrush-platform", color: "#c084fc" },
-  { label: "Data Portal", id: "data-portal", color: "#6ee7b7" },
-  { label: "Psychographic", id: "psychographic", color: "#fcd34d" },
+  { label: "Search", id: "search-discover", color: "#93c5fd" },
+  { label: "Model", id: "model-understand", color: "#c084fc" },
+  { label: "Optimize", id: "optimize-decide", color: "#6ee7b7" },
+  { label: "Activate", id: "personalize-activate", color: "#fcd34d" },
 ];
 
 interface SectionNavProps {

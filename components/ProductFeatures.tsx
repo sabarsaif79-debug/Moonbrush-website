@@ -35,9 +35,21 @@ const features = [
     description:
       "Go beyond age and income. Build living segments from behavioral cohorts, cultural signals, and memetic forecasts that evolve as the world does.",
     bullets: [
-      "250M+ consumer graph, always updating",
+      "289M+ consumer graph, always updating",
       "Behavioral cohort builder with drill-through",
       "Export-ready segments in under 20 minutes",
+    ],
+  },
+  {
+    id: "activate",
+    label: "Activate",
+    title: "Deploy across every channel that matters.",
+    description:
+      "Push behaviorally optimized audiences directly to DSPs, email, SMS, and direct mail — with full lineage tracking and one-week integration for any new channel.",
+    bullets: [
+      "DSP, email, SMS, and direct mail activation",
+      "PRISM: 1,000s of personalized creative variants",
+      "New integrations scoped and live within one week",
     ],
   },
 ];
@@ -394,7 +406,110 @@ function SegmentVisual() {
   );
 }
 
-const visuals = [BehaviorVisual, PersonalizeVisual, SegmentVisual];
+function ActivateVisual() {
+  const channels = [
+    { label: "DSP / Programmatic", status: "Live", color: "#4ade80" },
+    { label: "Email (Klaviyo)", status: "Live", color: "#4ade80" },
+    { label: "SMS", status: "Live", color: "#4ade80" },
+    { label: "Direct Mail (DG3)", status: "Live", color: "#4ade80" },
+    { label: "CTV / OTT", status: "Ready", color: "#fbbf24" },
+  ];
+
+  return (
+    <div style={{ position: "relative", width: "100%", height: "100%" }}>
+      {/* Pipeline header */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          marginBottom: 16,
+          fontSize: 10,
+          letterSpacing: 1.5,
+          textTransform: "uppercase",
+          fontWeight: 600,
+          color: "var(--t-accent)",
+        }}
+      >
+        <div
+          style={{
+            width: 6,
+            height: 6,
+            borderRadius: "50%",
+            background: "#4ade80",
+            animation: "livePulse 1.5s ease infinite",
+          }}
+        />
+        Activation Pipeline
+      </div>
+
+      {/* Channel cards */}
+      {channels.map((ch, i) => (
+        <div
+          key={i}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "10px 14px",
+            borderRadius: 8,
+            border: "1px solid var(--t-card-border)",
+            background: "var(--t-bg)",
+            marginBottom: 8,
+            animation: `featureSlideIn 0.5s cubic-bezier(0.16,1,0.3,1) ${i * 0.1}s both`,
+          }}
+        >
+          <span style={{ fontSize: 12, fontWeight: 500, color: "var(--t-text)" }}>
+            {ch.label}
+          </span>
+          <div
+            style={{
+              padding: "3px 10px",
+              borderRadius: 20,
+              background: `${ch.color}18`,
+              color: ch.color,
+              fontSize: 9,
+              fontWeight: 600,
+              letterSpacing: 0.5,
+            }}
+          >
+            {ch.status}
+          </div>
+        </div>
+      ))}
+
+      {/* Lineage bar */}
+      <div
+        style={{
+          marginTop: 12,
+          padding: "10px 14px",
+          borderRadius: 8,
+          border: "1px dashed var(--t-accent)",
+          borderColor: "var(--t-accent-faint)",
+          opacity: 0.75,
+        }}
+      >
+        <div
+          style={{
+            fontSize: 9,
+            textTransform: "uppercase",
+            letterSpacing: 1.5,
+            color: "var(--t-accent)",
+            marginBottom: 4,
+            fontWeight: 600,
+          }}
+        >
+          Lineage Tracking
+        </div>
+        <div style={{ fontSize: 11, color: "var(--t-text-muted)", lineHeight: 1.5 }}>
+          Full audit trail: source → model → segment → activation
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const visuals = [BehaviorVisual, PersonalizeVisual, SegmentVisual, ActivateVisual];
 
 /* ─── main component ─── */
 export default function ProductFeatures() {

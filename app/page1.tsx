@@ -5,7 +5,7 @@ import Nav from "@/components/Nav";
 import SectionNav, { sectionItems } from "@/components/SectionNav";
 import ParallaxMoon from "@/components/ParallaxMoon";
 import ShowcaseFlip from "@/components/ShowcaseCard";
-import LogoOrbit from "@/components/LogoOrbit";
+import LogoTicker from "@/components/LogoTicker";
 import Reveal from "@/components/Reveal";
 import CountUp from "@/components/CountUp";
 import ProductFeatures from "@/components/ProductFeatures";
@@ -257,9 +257,6 @@ export default function Home() {
       {/* ─── Moon ─── */}
       <ParallaxMoon heroLoaded={heroLoaded} glowColor={glowColor} showcaseBottom={showcaseBottom} />
 
-      {/* ─── Logo Orbit (around moon) ─── */}
-      <LogoOrbit visible={heroLoaded} showcaseBottom={showcaseBottom} />
-
       {/* ─── Navigation ─── */}
       {pastHero && inShowcase ? (
         <SectionNav
@@ -452,6 +449,30 @@ export default function Home() {
               />
             </div>
           </div>
+        </section>
+
+        {/* =============================================
+            MOMENT 2 — Client Logos
+            Appears after scrolling out of showcase/moon
+        ============================================= */}
+        <section
+          className="relative z-10"
+          style={{
+            borderTop: "1px solid rgba(255,255,255,0.06)",
+            borderBottom: "1px solid rgba(255,255,255,0.06)",
+          }}
+        >
+          <Reveal>
+            <div className="text-center pt-10">
+              <span
+                className="font-body text-[11px] tracking-[3px] uppercase"
+                style={{ color: "rgba(255,255,255,0.35)" }}
+              >
+                Featured clients
+              </span>
+            </div>
+          </Reveal>
+          <LogoTicker />
         </section>
 
         {/* =============================================

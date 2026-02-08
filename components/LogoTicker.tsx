@@ -1,14 +1,16 @@
 "use client";
 
 const logos = [
-  "Walmart",
-  "Deloitte",
-  "NBA",
-  "Kroger",
-  "Live Nation",
-  "Publicis",
-  "iHeart",
-  "Zillow",
+  { name: "CVS Health", file: "cvs-health.png" },
+  { name: "San Diego Padres", file: "san-diego-padres.png" },
+  { name: "Karl Strauss", file: "karl-strauss.png" },
+  { name: "Buc-ee's", file: "buc-ees.png" },
+  { name: "Ministry of Hajj and Umrah", file: "ministry-hajj-umrah.png" },
+  { name: "Indian Gaming Association", file: "indian-gaming-association.png" },
+  { name: "ALDI", file: "aldi.png" },
+  { name: "UAE Ministry of Industry", file: "uae-ministry-industry.png" },
+  { name: "Dine Brands", file: "dine-brands.png" },
+  { name: "KIPP", file: "kipp.png" },
 ];
 
 export default function LogoTicker() {
@@ -35,21 +37,29 @@ export default function LogoTicker() {
       <div
         className="flex gap-16 items-center"
         style={{
-          animation: "ticker 30s linear infinite",
+          animation: "ticker 35s linear infinite",
           width: "max-content",
         }}
       >
-        {doubled.map((name, i) => (
-          <span
-            key={`${name}-${i}`}
-            className="font-display text-[15px] font-semibold tracking-[2px] uppercase whitespace-nowrap select-none"
+        {doubled.map((logo, i) => (
+          <img
+            key={`${logo.name}-${i}`}
+            src={`/logos/${logo.file}`}
+            alt={logo.name}
             style={{
-              color: "var(--t-text-faint)",
-              transition: "color 0.5s ease",
+              height: 40,
+              width: "auto",
+              objectFit: "contain",
+              opacity: 0.85,
+              transition: "opacity 0.3s ease",
             }}
-          >
-            {name}
-          </span>
+            onMouseEnter={(e) => {
+              e.currentTarget.style.opacity = "1";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.opacity = "0.7";
+            }}
+          />
         ))}
       </div>
 
