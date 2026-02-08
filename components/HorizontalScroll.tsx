@@ -15,6 +15,7 @@ export default function HorizontalScroll({
   const [active, setActive] = useState(0);
   const trackRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef(0);
+  const canSwipeRef = useRef(true);
   const total = children.length;
 
   /* Snap to slide */
@@ -56,24 +57,24 @@ export default function HorizontalScroll({
   useEffect(() => {
     const el = trackRef.current;
     if (!el) return;
-    let canSwipe = true;
     const onWheel = (e: WheelEvent) => {
-      if (!canSwipe) return;
-      const delta =
-        Math.abs(e.deltaX) > Math.abs(e.deltaY)
-          ? e.deltaX
-          : e.deltaY;
+      if (!canSwipeRef.current) return;
+      const absX = Math.abs(e.deltaX);
+      const absY = Math.abs(e.deltaY);
+      const delta = absX > absY ? e.deltaX : e.deltaY;
       if (Math.abs(delta) < 20) return;
-      canSwipe = false;
+      e.preventDefault();
+      e.stopPropagation();
+      canSwipeRef.current = false;
       if (delta > 0 && active < total - 1)
         setActive((p) => Math.min(p + 1, total - 1));
       else if (delta < 0 && active > 0)
         setActive((p) => Math.max(p - 1, 0));
       setTimeout(() => {
-        canSwipe = true;
-      }, 600);
+        canSwipeRef.current = true;
+      }, 800);
     };
-    el.addEventListener("wheel", onWheel, { passive: true });
+    el.addEventListener("wheel", onWheel, { passive: false });
     return () => el.removeEventListener("wheel", onWheel);
   }, [active, total]);
 
@@ -198,7 +199,7 @@ export default function HorizontalScroll({
             alignItems: "center",
             justifyContent: "center",
             cursor: "pointer",
-            color: "var(--t-text-primary, #fff)",
+            color: "var(--t-accent, #93c5fd)",
             fontSize: 18,
             backdropFilter: "blur(10px)",
             transition: "all 0.3s ease",
@@ -226,7 +227,7 @@ export default function HorizontalScroll({
             alignItems: "center",
             justifyContent: "center",
             cursor: "pointer",
-            color: "var(--t-text-primary, #fff)",
+            color: "var(--t-accent, #93c5fd)",
             fontSize: 18,
             backdropFilter: "blur(10px)",
             transition: "all 0.3s ease",

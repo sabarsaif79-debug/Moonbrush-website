@@ -5,7 +5,7 @@ import Nav from "@/components/Nav";
 import SectionNav, { sectionItems } from "@/components/SectionNav";
 import ParallaxMoon from "@/components/ParallaxMoon";
 import ShowcaseFlip from "@/components/ShowcaseCard";
-import LogoTicker from "@/components/LogoTicker";
+import LogoOrbit from "@/components/LogoOrbit";
 import Reveal from "@/components/Reveal";
 import CountUp from "@/components/CountUp";
 import ProductFeatures from "@/components/ProductFeatures";
@@ -20,6 +20,7 @@ import FinalCTA from "@/components/FinalCTA";
 import Footer from "@/components/Footer";
 import { ThemeProvider } from "@/components/ThemeContext";
 import ThemedSection from "@/components/ThemedSection";
+import CardDeck from "@/components/CardDeck";
 
 /* ─── Showcase Card Data ─── */
 const cardData = [
@@ -164,6 +165,7 @@ export default function Home() {
       const absX = Math.abs(e.deltaX);
       const absY = Math.abs(e.deltaY);
       if (absX < 15 || absY > absX) return;
+      e.preventDefault();
       const delta = e.deltaX;
       canSwipe = false;
       if (delta > 0) goNext();
@@ -172,7 +174,7 @@ export default function Home() {
         canSwipe = true;
       }, 600);
     };
-    window.addEventListener("wheel", onWheel, { passive: true });
+    window.addEventListener("wheel", onWheel, { passive: false });
     return () => window.removeEventListener("wheel", onWheel);
   }, [inShowcase, goNext, goPrev]);
 
@@ -221,9 +223,16 @@ export default function Home() {
 
   return (
     <ThemeProvider>
+    <style>{`
+      html, body {
+        overscroll-behavior-x: none;
+      }
+    `}</style>
     <div
-      className="relative min-h-screen overflow-x-hidden"
+      className="relative min-h-screen"
       style={{
+        overflowX: "clip",
+        overscrollBehaviorX: "none",
         fontFamily: "var(--font-body)",
         color: "var(--t-text-primary, #fff)",
       }}
@@ -256,6 +265,9 @@ export default function Home() {
 
       {/* ─── Moon ─── */}
       <ParallaxMoon heroLoaded={heroLoaded} glowColor={glowColor} showcaseBottom={showcaseBottom} />
+
+      {/* ─── Logo Orbit (around moon) ─── */}
+      <LogoOrbit visible={heroLoaded} showcaseBottom={showcaseBottom} />
 
       {/* ─── Navigation ─── */}
       {pastHero && inShowcase ? (
@@ -452,152 +464,142 @@ export default function Home() {
         </section>
 
         {/* =============================================
-            MOMENT 2 — Client Logos
-            Appears after scrolling out of showcase/moon
-        ============================================= */}
-        <section
-          className="relative z-10"
-          style={{
-            borderTop: "1px solid rgba(255,255,255,0.06)",
-            borderBottom: "1px solid rgba(255,255,255,0.06)",
-          }}
-        >
-          <Reveal>
-            <div className="text-center pt-10">
-              <span
-                className="font-body text-[11px] tracking-[3px] uppercase"
-                style={{ color: "rgba(255,255,255,0.35)" }}
-              >
-                Featured clients
-              </span>
-            </div>
-          </Reveal>
-          <LogoTicker />
-        </section>
-
-        {/* =============================================
             ZONE 2 — Themed Content
         ============================================= */}
         <ThemedSection>
 
-          {/* MOMENT 4 — Product Features (Tabbed) */}
-          <ProductFeatures />
+          <CardDeck>
+            {/* CARD 1 — Product Features (Tabbed) */}
+            <section
+              className="relative z-10"
+              style={{ padding: "80px clamp(20px,6vw,80px)" }}
+            >
+              <ProductFeatures />
+            </section>
 
-          {/* MOMENT 5 — How It Works */}
-          <section
-            className="relative z-10"
-            style={{
-              padding: "80px clamp(20px,6vw,80px)",
-              borderTop: "1px solid var(--t-border)",
-            }}
-          >
-            <HowItWorks />
-          </section>
+            {/* CARD 2 — How It Works */}
+            <section
+              className="relative z-10"
+              style={{
+                padding: "80px clamp(20px,6vw,80px)",
+                minHeight: "100vh",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <HowItWorks />
+            </section>
 
-          {/* MOMENT 6 — Narrative Scroll */}
-          <section
-            className="relative z-10"
-            style={{
-              padding: "80px 0",
-              borderTop: "1px solid var(--t-border)",
-            }}
-          >
-            <div className="text-center mb-12" style={{ padding: "0 clamp(20px,6vw,80px)" }}>
-              <Reveal>
-                <div
-                  className="font-body text-[11px] tracking-[4px] uppercase mb-4"
-                  style={{ color: "var(--t-accent-soft)" }}
-                >
-                  Why Moonbrush
-                </div>
-              </Reveal>
-              <Reveal delay={0.1}>
-                <h2
-                  className="font-display font-bold leading-[1.1]"
-                  style={{ fontSize: "clamp(28px, 3.5vw, 44px)" }}
-                >
-                  The depth others can&apos;t reach.
-                </h2>
-              </Reveal>
-            </div>
-
-            <HorizontalScroll labels={["The Gap", "Who It's For", "Capabilities"]}>
-              {/* Panel A: Iceberg */}
-              <IcebergSection />
-
-              {/* Panel B: Segment Cards */}
-              <SegmentCards />
-
-              {/* Panel C: Capabilities Marquee */}
-              <div style={{ padding: "40px 0" }}>
-                <div className="text-center mb-10">
-                  <h3
-                    className="font-display text-[clamp(24px,3vw,36px)] font-bold mb-3"
+            {/* CARD 3 — Narrative Scroll */}
+            <section
+              className="relative z-10"
+              style={{
+                padding: "80px 0",
+              }}
+            >
+              <div className="text-center mb-12" style={{ padding: "0 clamp(20px,6vw,80px)" }}>
+                <Reveal>
+                  <div
+                    className="font-body text-[11px] tracking-[4px] uppercase mb-4"
+                    style={{ color: "var(--t-accent-soft)" }}
                   >
-                    600+ models, scores, and dimensions.
-                  </h3>
-                  <p
-                    className="font-body text-[15px]"
-                    style={{ color: "var(--t-text-muted)" }}
+                    Why Moonbrush
+                  </div>
+                </Reveal>
+                <Reveal delay={0.1}>
+                  <h2
+                    className="font-display font-bold leading-[1.1]"
+                    style={{ fontSize: "clamp(28px, 3.5vw, 44px)" }}
                   >
-                    Every capability continuously validated, calibrated, and updated.
-                  </p>
-                </div>
-                {/* Row 1 scrolling right */}
-                <div
-                  className="flex gap-3 mb-4 overflow-hidden"
-                  style={{ maskImage: "linear-gradient(90deg, transparent, black 10%, black 90%, transparent)" }}
-                >
-                  <div className="flex gap-3 animate-marquee-right">
-                    {[...capsRow1, ...capsRow1, ...capsRow1].map((cap, i) => (
-                      <CapPill key={`r1-${i}`} label={cap} delay={0} />
-                    ))}
-                  </div>
-                </div>
-                {/* Row 2 scrolling left */}
-                <div
-                  className="flex gap-3 overflow-hidden"
-                  style={{ maskImage: "linear-gradient(90deg, transparent, black 10%, black 90%, transparent)" }}
-                >
-                  <div className="flex gap-3 animate-marquee-left">
-                    {[...capsRow2, ...capsRow2, ...capsRow2].map((cap, i) => (
-                      <CapPill key={`r2-${i}`} label={cap} delay={0} />
-                    ))}
-                  </div>
-                </div>
-                <style>{`
-                  @keyframes marquee-right {
-                    0% { transform: translateX(0); }
-                    100% { transform: translateX(-33.33%); }
-                  }
-                  @keyframes marquee-left {
-                    0% { transform: translateX(-33.33%); }
-                    100% { transform: translateX(0); }
-                  }
-                  .animate-marquee-right { animation: marquee-right 25s linear infinite; }
-                  .animate-marquee-left { animation: marquee-left 25s linear infinite; }
-                `}</style>
+                    The depth others can&apos;t reach.
+                  </h2>
+                </Reveal>
               </div>
-            </HorizontalScroll>
-          </section>
 
-          {/* MOMENT 7 — Trust + Case Study + CTA */}
+              <HorizontalScroll labels={["The Gap", "Who It's For", "Capabilities"]}>
+                {/* Panel A: Iceberg */}
+                <IcebergSection />
+
+                {/* Panel B: Segment Cards */}
+                <SegmentCards />
+
+                {/* Panel C: Capabilities Marquee */}
+                <div style={{ padding: "40px 0" }}>
+                  <div className="text-center mb-10">
+                    <h3
+                      className="font-display text-[clamp(24px,3vw,36px)] font-bold mb-3"
+                    >
+                      600+ models, scores, and dimensions.
+                    </h3>
+                    <p
+                      className="font-body text-[15px]"
+                      style={{ color: "var(--t-text-muted)" }}
+                    >
+                      Every capability continuously validated, calibrated, and updated.
+                    </p>
+                  </div>
+                  {/* Row 1 scrolling right */}
+                  <div
+                    className="flex gap-3 mb-4 overflow-hidden"
+                    style={{ maskImage: "linear-gradient(90deg, transparent, black 10%, black 90%, transparent)" }}
+                  >
+                    <div className="flex gap-3 animate-marquee-right">
+                      {[...capsRow1, ...capsRow1, ...capsRow1].map((cap, i) => (
+                        <CapPill key={`r1-${i}`} label={cap} delay={0} />
+                      ))}
+                    </div>
+                  </div>
+                  {/* Row 2 scrolling left */}
+                  <div
+                    className="flex gap-3 overflow-hidden"
+                    style={{ maskImage: "linear-gradient(90deg, transparent, black 10%, black 90%, transparent)" }}
+                  >
+                    <div className="flex gap-3 animate-marquee-left">
+                      {[...capsRow2, ...capsRow2, ...capsRow2].map((cap, i) => (
+                        <CapPill key={`r2-${i}`} label={cap} delay={0} />
+                      ))}
+                    </div>
+                  </div>
+                  <style>{`
+                    @keyframes marquee-right {
+                      0% { transform: translateX(0); }
+                      100% { transform: translateX(-33.33%); }
+                    }
+                    @keyframes marquee-left {
+                      0% { transform: translateX(-33.33%); }
+                      100% { transform: translateX(0); }
+                    }
+                    .animate-marquee-right { animation: marquee-right 25s linear infinite; }
+                    .animate-marquee-left { animation: marquee-left 25s linear infinite; }
+                  `}</style>
+                </div>
+              </HorizontalScroll>
+            </section>
+
+            {/* CARD 4 — Trust + Case Study */}
+            <section
+              className="relative z-10"
+              style={{
+                padding: "80px clamp(20px,6vw,80px)",
+              }}
+            >
+              <TrustBand />
+              <div style={{ marginTop: 40 }}>
+                <CaseHighlight />
+              </div>
+            </section>
+          </CardDeck>
+
+          {/* Final CTA — outside the deck, scrolls normally */}
           <section
-            className="relative z-10"
+            className="relative"
             style={{
-              borderTop: "1px solid var(--t-border)",
+              zIndex: 50,
               padding: "80px clamp(20px,6vw,80px) 0",
+              background: "var(--t-bg)",
             }}
           >
-            {/* Trust Signals + Integrations */}
-            <TrustBand />
-
-            {/* Case Study Highlight */}
-            <div style={{ marginTop: 40, padding: "0 0 40px" }}>
-              <CaseHighlight />
-            </div>
-
-            {/* Final CTA */}
             <FinalCTA />
           </section>
 

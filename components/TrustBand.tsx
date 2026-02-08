@@ -84,7 +84,7 @@ export default function TrustBand() {
             fontWeight: 700,
             lineHeight: 1.2,
             marginBottom: 10,
-            color: "var(--t-text-primary, #fff)",
+            color: "#4b5563",
           }}
         >
           Enterprise-grade security.
@@ -117,7 +117,7 @@ export default function TrustBand() {
                 fontFamily: "var(--font-body)",
                 fontSize: 12,
                 fontWeight: 500,
-                color: "var(--t-text-primary, #fff)",
+                color: "#9ca3af",
               }}
             >
               <span style={{ fontSize: 14 }}>{cert.icon}</span>
@@ -159,7 +159,7 @@ export default function TrustBand() {
             fontWeight: 700,
             lineHeight: 1.2,
             marginBottom: 10,
-            color: "var(--t-text-primary, #fff)",
+            color: "#6366f1",
           }}
         >
           Seamless connections.
@@ -242,7 +242,7 @@ export default function TrustBand() {
               fontWeight: 700,
               lineHeight: 1.2,
               marginBottom: 10,
-              color: "var(--t-text-primary, #fff)",
+              color: "#3b82f6",
             }}
           >
             Flat-rate access. No per-record fees.

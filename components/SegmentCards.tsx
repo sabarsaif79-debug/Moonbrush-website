@@ -159,7 +159,7 @@ export default function SegmentCards() {
                 fontWeight: 700,
                 lineHeight: 1.2,
                 marginBottom: 12,
-                color: "var(--t-text-primary, #fff)",
+                color: seg.accent,
               }}
             >
               {seg.headline}

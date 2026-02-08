@@ -87,7 +87,7 @@ export default function CaseHighlight() {
             fontSize: "clamp(16px, 1.8vw, 20px)",
             fontWeight: 600,
             lineHeight: 1.3,
-            color: "var(--t-text-primary, #fff)",
+            color: "#6366f1",
             marginBottom: 6,
           }}
         >

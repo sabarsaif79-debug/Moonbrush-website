@@ -319,7 +319,7 @@ export default function IcebergSection() {
                     fontFamily: "var(--font-body)",
                     fontSize: 13,
                     fontWeight: 600,
-                    color: "var(--t-text-primary, #fff)",
+                    color: "#7c3aed",
                     marginBottom: 2,
                   }}
                 >

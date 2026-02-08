@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const logos = [
   { name: "CVS Health", file: "cvs-health.png" },
@@ -24,6 +24,8 @@ export default function LogoOrbit({ visible, showcaseBottom }: LogoOrbitProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollYRef = useRef(0);
   const windowHRef = useRef(800);
+  const [mounted, setMounted] = useState(false);
+  const initialized = useRef(false);
   const showcaseRef = useRef(showcaseBottom);
   const visibleRef = useRef(visible);
   const rafRef = useRef(0);
@@ -35,6 +37,8 @@ export default function LogoOrbit({ visible, showcaseBottom }: LogoOrbitProps) {
   useEffect(() => {
     windowHRef.current = window.innerHeight;
     scrollYRef.current = window.scrollY;
+    initialized.current = true;
+    setMounted(true);
     const onScroll = () => { scrollYRef.current = window.scrollY; };
     const onResize = () => { windowHRef.current = window.innerHeight; };
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -55,7 +59,7 @@ export default function LogoOrbit({ visible, showcaseBottom }: LogoOrbitProps) {
       progressRef.current += speed * dt;
 
       const el = containerRef.current;
-      if (!el) { rafRef.current = requestAnimationFrame(animate); return; }
+      if (!el || !initialized.current) { rafRef.current = requestAnimationFrame(animate); return; }
 
       const scrollY = scrollYRef.current;
       const wh = windowHRef.current;
@@ -83,10 +87,11 @@ export default function LogoOrbit({ visible, showcaseBottom }: LogoOrbitProps) {
 
       /* Spacing: logos spread evenly, wrap around */
       const count = logos.length;
-      const spacing = 1.1 / count;
+      const logoSpan = .95;
+      const spacing = logoSpan / (count - .5);
 
       /* Container opacity */
-      const fadeStart = 300;
+      const fadeStart = 200;
       const fadeOut = sb <= fadeStart ? Math.max(0, sb / fadeStart) : 1;
       el.style.opacity = String(vis ? fadeOut : 0);
 
@@ -100,7 +105,7 @@ export default function LogoOrbit({ visible, showcaseBottom }: LogoOrbitProps) {
 
         /* Map t to position: -1 (left edge) to +1 (right edge)
            We extend beyond visible range so logos enter/exit smoothly */
-        const extendedT = rawT * 3 - 1.5; /* range: -1.5 to 1.5 */
+        const extendedT = rawT * 2.5 - 1.5; /* range: -1.5 to 1.5 */
 
         /* X position: linear across moon */
         const x = moonCenterX + extendedT * pathHalfWidth;
@@ -122,7 +127,7 @@ export default function LogoOrbit({ visible, showcaseBottom }: LogoOrbitProps) {
 
 child.style.transform =
   "translate(" + x + "px," + y + "px) translate(-50%,-50%) perspective(800px) rotateY(" + rotateY + "deg) scale(" + s + ")";
-        child.style.opacity = String(opacity * 0.85);
+        child.style.opacity = String(opacity * 1.85);
       }
 
       rafRef.current = requestAnimationFrame(animate);
@@ -131,6 +136,8 @@ child.style.transform =
     rafRef.current = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(rafRef.current);
   }, []);
+
+  if (!mounted) return null;
 
   return (
     <div
@@ -158,10 +165,11 @@ child.style.transform =
             left: 0,
             height: 90,
             width: "auto",
-            maxWidth: 160,
+            maxWidth: 100,
             objectFit: "contain",
             willChange: "transform, opacity",
             backfaceVisibility: "hidden",
+              
           }}
         />
       ))}
