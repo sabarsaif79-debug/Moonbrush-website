@@ -25,51 +25,51 @@ import CardDeck from "@/components/CardDeck";
 /* ─── Showcase Card Data ─── */
 const cardData = [
   {
-    id: "search-discover",
+    id: "behavioral-intelligence",
     icon: "\u25C8",
-    title: "Search & Discover",
-    stat: "289M+",
-    statLabel: "consumer profiles",
+    title: "Behavioral Intelligence",
+    stat: "10B+",
+    statLabel: "daily signals ingested",
     description:
-      "Search the entire U.S. consumer graph with behavioral, intent, and brand affinity filters. Unlimited access. No credits. No per-record fees.",
-    capabilities: ["Behavioral Filters", "Real-Time Intent", "Brand Affinity"],
-    differentiator: "What competitors charge per record, we include in flat-rate access.",
+      "Transform billions of raw signals into a living map of human action. We move beyond static demographics to understand not just who your audience is, but how they move through the world in real time.",
+    capabilities: ["30k+ Datapoints Per Profile", "100% Auditable Provenance", "Zero Latency Models"],
+    differentiator: "Not static segments\u2014living models that evolve with every signal.",
     color: "#93c5fd",
   },
   {
-    id: "model-understand",
+    id: "psychographic-modeling",
     icon: "\u25C7",
-    title: "Model & Understand",
+    title: "Psychographic Modeling",
     stat: "181",
     statLabel: "behavioral models",
     description:
-      "Build custom behavioral models across 11 lens categories. Drill into any individual\u2019s complete profile\u2014down to what they searched yesterday.",
-    capabilities: ["Custom Builder", "12 Audience Lenses", "Individual Deep Dives"],
-    differentiator: "10 years in the making. No competitor matches individual-level behavioral depth.",
+      "Decode the \u201Cwhy\u201D behind the action. Our models look past surface-level traits to unlock the nuanced motives, narratives, and hidden intents that drive decision-making.",
+    capabilities: ["Predictive Intent Scoring", "Deep Affinity Mapping", "Cross-Platform Tracking"],
+    differentiator: "Page-level attention telemetry reveals what competitors can\u2019t see.",
     color: "#c084fc",
   },
   {
-    id: "optimize-decide",
+    id: "personalization",
     icon: "\u25CB",
-    title: "Optimize & Decide",
-    stat: "54",
-    statLabel: "playbook dimensions",
+    title: "1:1 Personalization",
+    stat: "1M+",
+    statLabel: "unique creative variants",
     description:
-      "The Playbook engine analyzes every individual across activation, creative, and messaging dimensions\u2014then segments them into behavioral cohorts with a scientific formula for conversion.",
-    capabilities: ["25 Activation Dims", "20 Creative Dims", "9 Messaging Dims"],
-    differentiator: "Not a suggestion\u2014a directive. 1,000+ options across every dimension.",
+      "One brand voice, millions of versions. Cut through the noise of modern advertising by deploying automated, hyper-relevant content that speaks directly to individual drivers and beliefs.",
+    capabilities: ["<20 Min Activation", "Contextual Optimization", "Privacy-First Tailoring"],
+    differentiator: "Every variant is algorithmically matched to individual psychology.",
     color: "#6ee7b7",
   },
   {
-    id: "personalize-activate",
+    id: "ai-decision-engine",
     icon: "\u25B3",
-    title: "Personalize & Activate",
-    stat: "130+",
-    statLabel: "messaging atoms",
+    title: "AI Decision Engine",
+    stat: "24/7",
+    statLabel: "hourly model updates",
     description:
-      "One creative in, thousands of personalized variants out. PRISM maps every individual\u2019s behavioral profile to unique copy, tone, visuals, and offers\u2014then deploys across every channel.",
-    capabilities: ["Dynamic Creative", "7 Atom Categories", "Multi-Channel"],
-    differentiator: "DSP, email, SMS, direct mail\u2014true 1:1 personalization at scale.",
+      "Turn intelligence into immediate impact. Our engine doesn\u2019t just analyze data\u2014it prioritizes plays, predicts outcomes, and learns from every interaction to continuously refine your strategy.",
+    capabilities: ["Causal Lift Prioritization", "Closed-Loop Learning", "Real-Time Threat Detection"],
+    differentiator: "Not a dashboard\u2014a directive. Autonomous decisions at machine speed.",
     color: "#fcd34d",
   },
 ];
@@ -157,22 +157,24 @@ export default function Home() {
     return () => window.removeEventListener("keydown", onKey);
   }, [inShowcase, goNext, goPrev]);
 
+  const canSwipeRef = useRef(true);
+
   /* ─── Trackpad Swipe ─── */
   useEffect(() => {
-    let canSwipe = true;
     const onWheel = (e: WheelEvent) => {
-      if (!inShowcase || !canSwipe) return;
+      if (!inShowcase || !canSwipeRef.current) return;
       const absX = Math.abs(e.deltaX);
       const absY = Math.abs(e.deltaY);
       if (absX < 15 || absY > absX) return;
       e.preventDefault();
+      e.stopPropagation();
+      canSwipeRef.current = false;
       const delta = e.deltaX;
-      canSwipe = false;
       if (delta > 0) goNext();
       else goPrev();
       setTimeout(() => {
-        canSwipe = true;
-      }, 600);
+        canSwipeRef.current = true;
+      }, 800);
     };
     window.addEventListener("wheel", onWheel, { passive: false });
     return () => window.removeEventListener("wheel", onWheel);
@@ -234,7 +236,7 @@ export default function Home() {
         overflowX: "clip",
         overscrollBehaviorX: "none",
         fontFamily: "var(--font-body)",
-        color: "var(--t-text, #fff)",
+        color: "var(--t-text-primary, #fff)",
       }}
     >
       {/* ─── Background ─── */}

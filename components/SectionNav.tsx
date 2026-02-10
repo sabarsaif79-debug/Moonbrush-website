@@ -7,10 +7,10 @@ export interface SectionItem {
 }
 
 export const sectionItems: SectionItem[] = [
-  { label: "Search", id: "search-discover", color: "#93c5fd" },
-  { label: "Model", id: "model-understand", color: "#c084fc" },
-  { label: "Optimize", id: "optimize-decide", color: "#6ee7b7" },
-  { label: "Activate", id: "personalize-activate", color: "#fcd34d" },
+  { label: "Intelligence", id: "behavioral-intelligence", color: "#93c5fd" },
+  { label: "Psychographics", id: "psychographic-modeling", color: "#c084fc" },
+  { label: "Personalization", id: "personalization", color: "#6ee7b7" },
+  { label: "AI Engine", id: "ai-decision-engine", color: "#fcd34d" },
 ];
 
 interface SectionNavProps {
