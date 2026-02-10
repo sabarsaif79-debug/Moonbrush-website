@@ -450,7 +450,7 @@ export default function PlatformActivationPage() {
         </div>
 
         {/* Messaging atoms */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(280px, 100%), 1fr))", gap: 16 }}>
           {messagingAtoms.map((atom, i) => (
             <GlassCard key={atom.name} color={atom.color} delay={i * 0.08}>
               <div

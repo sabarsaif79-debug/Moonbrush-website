@@ -614,7 +614,7 @@ function SolutionSection({ sol, idx }: { sol: (typeof solutions)[number]; idx: n
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))",
+          gridTemplateColumns: "repeat(auto-fit, minmax(min(340px, 100%), 1fr))",
           gap: 30,
           alignItems: "start",
         }}
@@ -710,9 +710,7 @@ function SolutionSection({ sol, idx }: { sol: (typeof solutions)[number]; idx: n
           {[
             <Link
               key="cta"
-              href="https://meetings-na2.hubspot.com/adam-syed/moonbrushdemo"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/contact"
               style={{
                 display: "inline-flex",
                 alignItems: "center",

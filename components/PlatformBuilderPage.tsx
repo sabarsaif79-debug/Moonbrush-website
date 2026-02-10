@@ -241,7 +241,7 @@ export default function PlatformBuilderPage() {
           </RevealGroup>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 20 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", gap: 20 }}>
           {signalTypes.map((s, i) => (
             <GlassCard key={s.name} color={s.color} delay={i * 0.15}>
               <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 16 }}>
@@ -460,7 +460,7 @@ export default function PlatformBuilderPage() {
           </RevealGroup>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 20 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%), 1fr))", gap: 20 }}>
           {scoringSystems.map((ss, i) => (
             <GlassCard key={ss.series} color={ss.color} delay={i * 0.1}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>

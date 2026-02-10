@@ -201,7 +201,7 @@ export default function AboutPage() {
           </h2>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(280px, 100%), 1fr))", gap: 16 }}>
           {thesisPillars.map((p, i) => (
             <GlassCard key={p.title} color={p.color} delay={i * 0.08}>
               <div
@@ -511,9 +511,7 @@ export default function AboutPage() {
       {/* BOTTOM CTA */}
       <section style={{ padding: "60px clamp(20px,6vw,80px) 120px", textAlign: "center" }}>
         <Link
-          href="https://meetings-na2.hubspot.com/adam-syed/moonbrushdemo"
-          target="_blank"
-          rel="noopener noreferrer"
+          href="/contact"
           style={{
             display: "inline-flex",
             alignItems: "center",

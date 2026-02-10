@@ -258,7 +258,7 @@ export default function PlatformDataPage() {
         </div>
 
         {/* Data sources */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 20 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", gap: 20 }}>
           {dataSources.map((src, i) => (
             <GlassCard key={src.tag} color={src.color} delay={i * 0.12}>
               <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
@@ -438,7 +438,7 @@ export default function PlatformDataPage() {
         </div>
 
         {/* Match key cards */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 20 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(280px, 100%), 1fr))", gap: 20 }}>
           {matchKeys.map((mk, i) => (
             <GlassCard key={mk.keys} color={mk.color} delay={i * 0.15}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
@@ -516,7 +516,7 @@ export default function PlatformDataPage() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(360px, 100%), 1fr))",
             gap: 40,
             marginTop: 60,
             alignItems: "center",

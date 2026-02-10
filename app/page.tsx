@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import Link from "next/link";
 import Nav from "@/components/Nav";
 import SectionNav, { sectionItems } from "@/components/SectionNav";
 import ParallaxMoon from "@/components/ParallaxMoon";
@@ -340,9 +341,7 @@ export default function Home() {
             }}
           >
             <a
-              href="https://meetings-na2.hubspot.com/adam-syed/moonbrushdemo"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/contact"
               className="font-body text-[15px] font-semibold py-4 px-10 rounded-xl inline-block relative overflow-hidden"
               style={{
                 background: "linear-gradient(135deg, #93c5fd, #a78bfa)",
@@ -378,7 +377,7 @@ export default function Home() {
               { end: 289, suffix: "M+", label: "Consumer profiles in graph", href: "/platform/search", glow: "#6ee7b7" },
               { end: 20, prefix: "<", suffix: " min", label: "Login to personalization", href: "/platform/activation", glow: "#fcd34d" },
             ].map((stat, i) => (
-              <a
+              <Link
                 key={stat.label}
                 href={stat.href}
                 className="text-center group relative block"
@@ -441,7 +440,7 @@ export default function Home() {
                 >
                   {stat.label}
                 </div>
-              </a>
+              </Link>
             ))}
           </div>
 

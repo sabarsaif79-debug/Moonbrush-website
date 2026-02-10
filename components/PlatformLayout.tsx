@@ -266,10 +266,11 @@ function PlatformInner({
               }}
             >
               <span style={{ fontSize: 18 }}>←</span>
-              <span>Back to Home</span>
+              <span className="hidden sm:inline">Back to Home</span>
             </Link>
 
             <span
+              className="hidden sm:inline"
               style={{
                 fontFamily: "var(--font-body, Outfit, sans-serif)",
                 fontWeight: 600,
@@ -290,14 +291,15 @@ function PlatformInner({
                 rel="noopener noreferrer"
                 style={{
                   fontFamily: "var(--font-body, Outfit, sans-serif)",
-                  fontSize: 13,
+                  fontSize: 12,
                   fontWeight: 600,
-                  padding: "8px 20px",
+                  padding: "8px 14px",
                   borderRadius: 8,
                   background: "var(--t-btn-bg)",
                   color: "var(--t-btn-text)",
                   textDecoration: "none",
                   transition: "all 0.3s ease",
+                  whiteSpace: "nowrap",
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.boxShadow = "var(--t-shadow-hover)";

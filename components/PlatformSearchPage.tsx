@@ -232,7 +232,7 @@ export default function PlatformSearchPage() {
           </RevealGroup>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", gap: 16 }}>
           {filterCategories.map((cat, i) => (
             <GlassCard key={cat.title} color={cat.color} delay={i * 0.08}>
               <div
@@ -490,7 +490,7 @@ export default function PlatformSearchPage() {
           </RevealGroup>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: 20 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(340px, 100%), 1fr))", gap: 20 }}>
           {pricingComparison.map((p, i) => (
             <GlassCard
               key={p.provider}

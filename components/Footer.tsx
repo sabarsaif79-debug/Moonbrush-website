@@ -1,5 +1,35 @@
 "use client";
 
+import Link from "next/link";
+
+const platformLinks = [
+  { label: "Data & Intelligence", href: "/platform/data" },
+  { label: "Builder & Models", href: "/platform/builder" },
+  { label: "Search & Workshop", href: "/platform/search" },
+  { label: "Activation & PRISM", href: "/platform/activation" },
+];
+
+const solutionLinks = [
+  { label: "Enterprise", href: "/solutions#enterprise" },
+  { label: "Mid-Market", href: "/solutions#midmarket" },
+  { label: "Small Business", href: "/solutions#smallbusiness" },
+  { label: "Agencies", href: "/solutions#agencies" },
+  { label: "Political", href: "/solutions#political" },
+];
+
+const companyLinks = [
+  { label: "About", href: "/about" },
+  { label: "Case Studies", href: "/case-studies" },
+  { label: "Verticals", href: "/verticals" },
+  { label: "Contact", href: "/contact" },
+];
+
+const legalLinks = [
+  { label: "Privacy Policy", href: "/privacy" },
+  { label: "Terms of Service", href: "/terms" },
+  { label: "Cookie Policy", href: "/cookies" },
+];
+
 export default function Footer() {
   return (
     <footer
@@ -37,28 +67,50 @@ export default function Footer() {
               Platform
             </h4>
             <ul className="space-y-3">
-              {[
-                "Embedded / API",
-                "Moonbrush Platform",
-                "Data Portal",
-                "Psychographic Modeling",
-              ].map((item) => (
-                <li key={item}>
-                  <a
-                    href="#"
+              {platformLinks.map((item) => (
+                <li key={item.label}>
+                  <Link
+                    href={item.href}
                     className="font-body text-sm transition-colors duration-300"
                     style={{ color: "var(--t-text-muted)" }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.color =
-                        "var(--t-accent)";
+                      e.currentTarget.style.color = "var(--t-accent)";
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.color =
-                        "var(--t-text-muted)";
+                      e.currentTarget.style.color = "var(--t-text-muted)";
                     }}
                   >
-                    {item}
-                  </a>
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Solutions */}
+          <div>
+            <h4
+              className="font-body text-[11px] tracking-[3px] uppercase mb-5"
+              style={{ color: "var(--t-accent-soft)" }}
+            >
+              Solutions
+            </h4>
+            <ul className="space-y-3">
+              {solutionLinks.map((item) => (
+                <li key={item.label}>
+                  <Link
+                    href={item.href}
+                    className="font-body text-sm transition-colors duration-300"
+                    style={{ color: "var(--t-text-muted)" }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = "var(--t-accent)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = "var(--t-text-muted)";
+                    }}
+                  >
+                    {item.label}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -73,27 +125,23 @@ export default function Footer() {
               Company
             </h4>
             <ul className="space-y-3">
-              {["About", "Careers", "Press", "Contact"].map(
-                (item) => (
-                  <li key={item}>
-                    <a
-                      href="#"
-                      className="font-body text-sm transition-colors duration-300"
-                      style={{ color: "var(--t-text-muted)" }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.color =
-                          "var(--t-accent)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.color =
-                          "var(--t-text-muted)";
-                      }}
-                    >
-                      {item}
-                    </a>
-                  </li>
-                )
-              )}
+              {companyLinks.map((item) => (
+                <li key={item.label}>
+                  <Link
+                    href={item.href}
+                    className="font-body text-sm transition-colors duration-300"
+                    style={{ color: "var(--t-text-muted)" }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = "var(--t-accent)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = "var(--t-text-muted)";
+                    }}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -106,26 +154,20 @@ export default function Footer() {
               Legal
             </h4>
             <ul className="space-y-3">
-              {[
-                "Privacy Policy",
-                "Terms of Service",
-                "Cookie Policy",
-              ].map((item) => (
-                <li key={item}>
+              {legalLinks.map((item) => (
+                <li key={item.label}>
                   <a
-                    href="#"
+                    href={item.href}
                     className="font-body text-sm transition-colors duration-300"
                     style={{ color: "var(--t-text-muted)" }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.color =
-                        "var(--t-accent)";
+                      e.currentTarget.style.color = "var(--t-accent)";
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.color =
-                        "var(--t-text-muted)";
+                      e.currentTarget.style.color = "var(--t-text-muted)";
                     }}
                   >
-                    {item}
+                    {item.label}
                   </a>
                 </li>
               ))}
@@ -144,30 +186,30 @@ export default function Footer() {
             className="font-body text-xs"
             style={{ color: "var(--t-text-faint)" }}
           >
-            © {new Date().getFullYear()} Moonbrush Inc. All
-            rights reserved.
+            © {new Date().getFullYear()} Moonbrush Inc. All rights reserved.
           </span>
           <div className="flex gap-6">
-            {["LinkedIn", "Twitter", "Instagram"].map(
-              (social) => (
-                <a
-                  key={social}
-                  href="#"
-                  className="font-body text-xs transition-colors duration-300"
-                  style={{ color: "var(--t-text-faint)" }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.color =
-                      "var(--t-accent)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.color =
-                      "var(--t-text-faint)";
-                  }}
-                >
-                  {social}
-                </a>
-              )
-            )}
+            {[
+              { label: "LinkedIn", href: "https://linkedin.com/company/moonbrush" },
+              { label: "Twitter", href: "https://twitter.com/moonbrush" },
+            ].map((social) => (
+              <a
+                key={social.label}
+                href={social.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-body text-xs transition-colors duration-300"
+                style={{ color: "var(--t-text-faint)" }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = "var(--t-accent)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = "var(--t-text-faint)";
+                }}
+              >
+                {social.label}
+              </a>
+            ))}
           </div>
         </div>
       </div>

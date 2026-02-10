@@ -119,9 +119,7 @@ export default function FinalCTA() {
           }}
         >
           <a
-            href="https://meetings-na2.hubspot.com/adam-syed/moonbrushdemo"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/contact"
             style={{
               fontFamily: "var(--font-body)",
               fontSize: 15,
@@ -158,7 +156,7 @@ export default function FinalCTA() {
               padding: "16px 40px",
               borderRadius: 10,
               background: "transparent",
-              color: "var(--t-text, #fff)",
+              color: "var(--t-text-primary, #fff)",
               textDecoration: "none",
               display: "inline-block",
               border: "1px solid var(--t-border, rgba(255,255,255,0.15))",
@@ -174,7 +172,7 @@ export default function FinalCTA() {
               e.currentTarget.style.borderColor =
                 "var(--t-border, rgba(255,255,255,0.15))";
               e.currentTarget.style.color =
-                "var(--t-text, #fff)";
+                "var(--t-text-primary, #fff)";
             }}
           >
             Talk to Sales

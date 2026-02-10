@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, ReactNode } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Logo from "./Logo";
 import ThemeToggle from "./ThemeToggle";
@@ -62,7 +62,7 @@ const plainLinks = [
   { label: "About", href: "/about" },
 ];
 
-/* ── Reusable dropdown component ── */
+/* ── Desktop dropdown ── */
 
 function NavDropdown({ menu }: { menu: DropdownMenu }) {
   const [open, setOpen] = useState(false);
@@ -193,6 +193,102 @@ function NavDropdown({ menu }: { menu: DropdownMenu }) {
   );
 }
 
+/* ── Mobile accordion section ── */
+
+function MobileSection({
+  menu,
+  onNavigate,
+}: {
+  menu: DropdownMenu;
+  onNavigate: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+      <button
+        onClick={() => setOpen(!open)}
+        style={{
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "16px 0",
+          background: "none",
+          border: "none",
+          cursor: "pointer",
+          fontFamily: "var(--font-body, Outfit, sans-serif)",
+          fontSize: 15,
+          fontWeight: 600,
+          letterSpacing: 1.5,
+          textTransform: "uppercase",
+          color: "rgba(255,255,255,0.8)",
+        }}
+      >
+        {menu.label}
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 10 10"
+          fill="none"
+          style={{
+            transform: open ? "rotate(180deg)" : "none",
+            transition: "transform 0.3s ease",
+            opacity: 0.4,
+          }}
+        >
+          <path d="M2 4L5 7L8 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+        </svg>
+      </button>
+
+      <div
+        style={{
+          maxHeight: open ? menu.items.length * 56 : 0,
+          overflow: "hidden",
+          transition: "max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
+        }}
+      >
+        {menu.items.map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            onClick={onNavigate}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              padding: "12px 12px 12px 8px",
+              textDecoration: "none",
+            }}
+          >
+            <div
+              style={{
+                width: 6,
+                height: 6,
+                borderRadius: "50%",
+                background: item.color,
+                flexShrink: 0,
+              }}
+            />
+            <div>
+              <div
+                style={{
+                  fontFamily: "var(--font-body, Outfit, sans-serif)",
+                  fontSize: 14,
+                  fontWeight: 500,
+                  color: "rgba(255,255,255,0.75)",
+                }}
+              >
+                {item.label}
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /* ── Main Nav ── */
 
 interface NavProps {
@@ -202,6 +298,7 @@ interface NavProps {
 
 export default function Nav({ visible = true, showToggle = false }: NavProps) {
   const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -209,62 +306,230 @@ export default function Nav({ visible = true, showToggle = false }: NavProps) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  /* Lock body scroll when mobile menu open */
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
+
+  const closeMobile = () => setMobileOpen(false);
+
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 px-[clamp(20px,4vw,60px)] h-[72px] flex items-center justify-between transition-all duration-400 ${
-        scrolled
-          ? "bg-bg/85 backdrop-blur-xl border-b border-accent/[0.08]"
-          : "bg-transparent border-b border-transparent"
-      }`}
-      style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0)" : "translateY(-100%)",
-        transition: "opacity 0.4s ease, transform 0.4s ease",
-        pointerEvents: visible ? "auto" : "none",
-      }}
-    >
-      <div className="flex items-center gap-3">
-        <Logo />
-        <span className="font-body font-semibold text-lg tracking-[3px] text-text-primary">
-          MOONBRUSH
-        </span>
-      </div>
+    <>
+      <nav
+        className={`fixed top-0 left-0 right-0 z-50 px-[clamp(16px,4vw,60px)] h-[72px] flex items-center justify-between transition-all duration-400 ${
+          scrolled || mobileOpen
+            ? "bg-bg/85 backdrop-blur-xl border-b border-accent/[0.08]"
+            : "bg-transparent border-b border-transparent"
+        }`}
+        style={{
+          opacity: visible ? 1 : 0,
+          transform: visible ? "translateY(0)" : "translateY(-100%)",
+          transition: "opacity 0.4s ease, transform 0.4s ease",
+          pointerEvents: visible ? "auto" : "none",
+        }}
+      >
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-3" style={{ textDecoration: "none" }}>
+          <Logo />
+          <span className="font-body font-semibold text-lg tracking-[3px] text-text-primary">
+            MOONBRUSH
+          </span>
+        </Link>
 
-      <div className="hidden lg:flex items-center gap-9">
-        {/* Dropdowns: Platform, Solutions, Verticals */}
-        {dropdowns.map((menu) => (
-          <NavDropdown key={menu.label} menu={menu} />
-        ))}
+        {/* Desktop nav */}
+        <div className="hidden lg:flex items-center gap-9">
+          {dropdowns.map((menu) => (
+            <NavDropdown key={menu.label} menu={menu} />
+          ))}
 
-        {/* Plain links: Case Studies, About */}
-        {plainLinks.map((l) => (
-          <Link
-            key={l.label}
-            href={l.href}
-            className="font-body text-[13px] font-normal tracking-[1.5px] text-text-primary/70 uppercase transition-colors duration-300 hover:text-accent"
+          {plainLinks.map((l) => (
+            <Link
+              key={l.label}
+              href={l.href}
+              className="font-body text-[13px] font-normal tracking-[1.5px] text-text-primary/70 uppercase transition-colors duration-300 hover:text-accent"
+            >
+              {l.label}
+            </Link>
+          ))}
+
+          {showToggle && <ThemeToggle />}
+
+          <a
+            href="https://meetings-na2.hubspot.com/adam-syed/moonbrushdemo"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-body text-[13px] font-medium tracking-[1px] text-bg bg-accent/90 px-6 py-2.5 rounded-md uppercase transition-all duration-300 hover:bg-accent hover:shadow-[0_0_20px_rgba(147,197,253,0.4)]"
           >
-            {l.label}
-          </Link>
-        ))}
+            Book a Demo
+          </a>
 
-        {showToggle && <ThemeToggle />}
+          <a
+            href="/login"
+            className="font-body text-[13px] font-normal tracking-[1.5px] text-accent/80 uppercase border border-accent/20 px-5 py-[9px] rounded-md transition-all duration-300 hover:border-accent/50 hover:text-accent"
+          >
+            Login
+          </a>
+        </div>
 
-        <a
-          href="https://meetings-na2.hubspot.com/adam-syed/moonbrushdemo"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-body text-[13px] font-medium tracking-[1px] text-bg bg-accent/90 px-6 py-2.5 rounded-md uppercase transition-all duration-300 hover:bg-accent hover:shadow-[0_0_20px_rgba(147,197,253,0.4)]"
+        {/* Mobile hamburger */}
+        <button
+          className="lg:hidden"
+          onClick={() => setMobileOpen(!mobileOpen)}
+          aria-label="Toggle menu"
+          style={{
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            padding: 8,
+            display: "flex",
+            flexDirection: "column",
+            gap: mobileOpen ? 0 : 5,
+            width: 32,
+            height: 32,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
         >
-          Book a Demo
-        </a>
+          <span
+            style={{
+              display: "block",
+              width: 22,
+              height: 2,
+              background: "var(--color-text-primary, #fff)",
+              borderRadius: 2,
+              transition: "all 0.3s ease",
+              transform: mobileOpen ? "rotate(45deg) translateY(0px)" : "none",
+              transformOrigin: "center",
+            }}
+          />
+          <span
+            style={{
+              display: "block",
+              width: 22,
+              height: 2,
+              background: "var(--color-text-primary, #fff)",
+              borderRadius: 2,
+              transition: "all 0.3s ease",
+              opacity: mobileOpen ? 0 : 1,
+            }}
+          />
+          <span
+            style={{
+              display: "block",
+              width: 22,
+              height: 2,
+              background: "var(--color-text-primary, #fff)",
+              borderRadius: 2,
+              transition: "all 0.3s ease",
+              transform: mobileOpen ? "rotate(-45deg) translateY(0px)" : "none",
+              transformOrigin: "center",
+            }}
+          />
+        </button>
+      </nav>
 
-        <a
-          href="/login"
-          className="font-body text-[13px] font-normal tracking-[1.5px] text-accent/80 uppercase border border-accent/20 px-5 py-[9px] rounded-md transition-all duration-300 hover:border-accent/50 hover:text-accent"
-        >
-          Login
-        </a>
+      {/* ── Mobile drawer ── */}
+      <div
+        style={{
+          position: "fixed",
+          top: 72,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 49,
+          background: "rgba(6, 6, 15, 0.97)",
+          backdropFilter: "blur(24px)",
+          WebkitBackdropFilter: "blur(24px)",
+          transform: mobileOpen ? "translateX(0)" : "translateX(100%)",
+          transition: "transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
+          overflowY: "auto",
+          WebkitOverflowScrolling: "touch",
+        }}
+      >
+        <div style={{ padding: "20px clamp(20px,6vw,40px) 40px" }}>
+          {/* Dropdown sections with accordions */}
+          {dropdowns.map((menu) => (
+            <MobileSection key={menu.label} menu={menu} onNavigate={closeMobile} />
+          ))}
+
+          {/* Plain links */}
+          {plainLinks.map((l) => (
+            <Link
+              key={l.label}
+              href={l.href}
+              onClick={closeMobile}
+              style={{
+                display: "block",
+                padding: "16px 0",
+                borderBottom: "1px solid rgba(255,255,255,0.06)",
+                fontFamily: "var(--font-body, Outfit, sans-serif)",
+                fontSize: 15,
+                fontWeight: 600,
+                letterSpacing: 1.5,
+                textTransform: "uppercase",
+                color: "rgba(255,255,255,0.8)",
+                textDecoration: "none",
+              }}
+            >
+              {l.label}
+            </Link>
+          ))}
+
+          {/* CTA buttons */}
+          <div style={{ marginTop: 32, display: "flex", flexDirection: "column", gap: 12 }}>
+            <a
+              href="https://meetings-na2.hubspot.com/adam-syed/moonbrushdemo"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={closeMobile}
+              style={{
+                display: "block",
+                textAlign: "center",
+                padding: "14px 24px",
+                borderRadius: 10,
+                background: "#93c5fd",
+                color: "#0a0a1a",
+                fontFamily: "var(--font-body, Outfit, sans-serif)",
+                fontSize: 14,
+                fontWeight: 700,
+                letterSpacing: 1,
+                textTransform: "uppercase",
+                textDecoration: "none",
+              }}
+            >
+              Book a Demo
+            </a>
+
+            <a
+              href="/login"
+              onClick={closeMobile}
+              style={{
+                display: "block",
+                textAlign: "center",
+                padding: "14px 24px",
+                borderRadius: 10,
+                border: "1px solid rgba(147,197,253,0.25)",
+                color: "#93c5fd",
+                fontFamily: "var(--font-body, Outfit, sans-serif)",
+                fontSize: 14,
+                fontWeight: 600,
+                letterSpacing: 1,
+                textTransform: "uppercase",
+                textDecoration: "none",
+              }}
+            >
+              Login
+            </a>
+          </div>
+        </div>
       </div>
-    </nav>
+    </>
   );
 }
