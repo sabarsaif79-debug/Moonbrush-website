@@ -373,55 +373,19 @@ export default function Home() {
             }}
           >
             {[
-              { end: 10, suffix: "B+", label: "Digital signals captured daily", href: "/platform/data", glow: "#93c5fd" },
-              { end: 181, suffix: "", label: "Behavioral enrichment models", href: "/platform/builder", glow: "#c084fc" },
-              { end: 289, suffix: "M+", label: "Consumer profiles in graph", href: "/platform/search", glow: "#6ee7b7" },
-              { end: 20, prefix: "<", suffix: " min", label: "Login to personalization", href: "/platform/activation", glow: "#fcd34d" },
+              { end: 10, suffix: "B+", label: "Digital signals captured daily" },
+              { end: 181, suffix: "", label: "Behavioral enrichment models" },
+              { end: 289, suffix: "M+", label: "Consumer profiles in graph" },
+              { end: 20, prefix: "<", suffix: " min", label: "Login to personalization" },
             ].map((stat, i) => (
-              <a
-                key={stat.label}
-                href={stat.href}
-                className="text-center group relative block"
-                style={{
-                  textDecoration: "none",
-                  cursor: "pointer",
-                  transition: "transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
-                  padding: "16px 8px",
-                  borderRadius: 16,
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "scale(1.12)";
-                  const glowEl = e.currentTarget.querySelector(".stat-glow") as HTMLElement;
-                  if (glowEl) glowEl.style.opacity = "1";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "scale(1)";
-                  const glowEl = e.currentTarget.querySelector(".stat-glow") as HTMLElement;
-                  if (glowEl) glowEl.style.opacity = "0";
-                }}
-              >
-                {/* Hover glow backdrop */}
+              <div key={stat.label} className="text-center">
                 <div
-                  className="stat-glow"
-                  style={{
-                    position: "absolute",
-                    inset: -10,
-                    borderRadius: 24,
-                    background: `radial-gradient(ellipse at center, ${stat.glow}20 0%, ${stat.glow}08 50%, transparent 70%)`,
-                    opacity: 0,
-                    transition: "opacity 0.4s ease",
-                    pointerEvents: "none",
-                    zIndex: 0,
-                  }}
-                />
-                <div
-                  className="font-display font-bold relative z-[1]"
+                  className="font-display font-bold"
                   style={{
                     fontSize: "clamp(28px, 3.5vw, 42px)",
                     background: "linear-gradient(135deg, #93c5fd, #e0e7ff)",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
-                    transition: "filter 0.4s ease",
                   }}
                 >
                   <CountUp
@@ -433,15 +397,12 @@ export default function Home() {
                   />
                 </div>
                 <div
-                  className="font-body text-[12px] tracking-[1px] uppercase mt-1 relative z-[1]"
-                  style={{
-                    color: "rgba(255,255,255,0.4)",
-                    transition: "color 0.4s ease",
-                  }}
+                  className="font-body text-[12px] tracking-[1px] uppercase mt-1"
+                  style={{ color: "rgba(255,255,255,0.4)" }}
                 >
                   {stat.label}
                 </div>
-              </a>
+              </div>
             ))}
           </div>
 

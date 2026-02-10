@@ -1,21 +1,199 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, ReactNode } from "react";
+import Link from "next/link";
 import Logo from "./Logo";
 import ThemeToggle from "./ThemeToggle";
 
-interface NavLink {
+/* ── Dropdown data ── */
+
+interface DropdownItem {
   label: string;
   href: string;
+  desc: string;
+  color: string;
 }
 
-const links: NavLink[] = [
-  { label: "Platform", href: "/platform" },
-  { label: "Solutions", href: "/solutions" },
-  { label: "Verticals", href: "/verticals" },
+interface DropdownMenu {
+  label: string;
+  fallbackHref: string;
+  items: DropdownItem[];
+}
+
+const dropdowns: DropdownMenu[] = [
+  {
+    label: "Platform",
+    fallbackHref: "/platform/data",
+    items: [
+      { label: "Data & Intelligence", href: "/platform/data", desc: "289M+ consumer graph, identity resolution, compliance", color: "#93c5fd" },
+      { label: "Builder & Models", href: "/platform/builder", desc: "181 enrichment models, 11 lens categories, custom scoring", color: "#c084fc" },
+      { label: "Search & Workshop", href: "/platform/search", desc: "Unlimited search, individual profiles, 12 audience lenses", color: "#6ee7b7" },
+      { label: "Activation & PRISM", href: "/platform/activation", desc: "Playbook engine, dynamic creative, multi-channel deployment", color: "#fcd34d" },
+    ],
+  },
+  {
+    label: "Solutions",
+    fallbackHref: "/solutions",
+    items: [
+      { label: "Enterprise", href: "/solutions#enterprise", desc: "PRISM personalization, infrastructure integration, full stack", color: "#93c5fd" },
+      { label: "Mid-Market", href: "/solutions#midmarket", desc: "Full behavioral workflow with dedicated support teams", color: "#c084fc" },
+      { label: "Small Business", href: "/solutions#smallbusiness", desc: "Fortune 500 data at flat-rate start-up pricing", color: "#6ee7b7" },
+      { label: "Agencies", href: "/solutions#agencies", desc: "Embedded behavioral science & data science teams", color: "#fcd34d" },
+      { label: "Political Campaigns", href: "/solutions#political", desc: "Behavioral voter targeting across every outreach channel", color: "#f87171" },
+      { label: "International", href: "/solutions#international", desc: "Alternative credit scoring, emerging market intelligence", color: "#f0abfc" },
+    ],
+  },
+  {
+    label: "Verticals",
+    fallbackHref: "/verticals",
+    items: [
+      { label: "Retail & E-Commerce", href: "/verticals#retail", desc: "Purchase drivers, brand conquest, personalized mail", color: "#93c5fd" },
+      { label: "Financial Services", href: "/verticals#finance", desc: "Risk scoring, trust dynamics, wealth management", color: "#6ee7b7" },
+      { label: "Healthcare", href: "/verticals#healthcare", desc: "HIPAA-compliant patient engagement & care targeting", color: "#f87171" },
+      { label: "Political & Advocacy", href: "/verticals#political", desc: "Voter behavioral profiles, cross-channel activation", color: "#fcd34d" },
+      { label: "Marketing Agencies", href: "/verticals#agencies", desc: "White-label behavioral intelligence for your clients", color: "#f0abfc" },
+      { label: "Nonprofits", href: "/verticals#nonprofit", desc: "Donor psychology, LTV modeling, personalized appeals", color: "#fca5a5" },
+    ],
+  },
+];
+
+const plainLinks = [
   { label: "Case Studies", href: "/case-studies" },
   { label: "About", href: "/about" },
 ];
+
+/* ── Reusable dropdown component ── */
+
+function NavDropdown({ menu }: { menu: DropdownMenu }) {
+  const [open, setOpen] = useState(false);
+  const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const enter = () => {
+    if (timeout.current) clearTimeout(timeout.current);
+    setOpen(true);
+  };
+  const leave = () => {
+    timeout.current = setTimeout(() => setOpen(false), 200);
+  };
+
+  const wide = menu.items.length > 4;
+
+  return (
+    <div
+      style={{ position: "relative" }}
+      onMouseEnter={enter}
+      onMouseLeave={leave}
+    >
+      <Link
+        href={menu.fallbackHref}
+        className="font-body text-[13px] font-normal tracking-[1.5px] text-text-primary/70 uppercase transition-colors duration-300 hover:text-accent"
+        style={{ display: "flex", alignItems: "center", gap: 4 }}
+      >
+        {menu.label}
+        <svg
+          width="10"
+          height="10"
+          viewBox="0 0 10 10"
+          fill="none"
+          style={{
+            transform: open ? "rotate(180deg)" : "none",
+            transition: "transform 0.3s ease",
+            opacity: 0.5,
+          }}
+        >
+          <path d="M2 4L5 7L8 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+        </svg>
+      </Link>
+
+      <div
+        style={{
+          position: "absolute",
+          top: "100%",
+          left: "50%",
+          transform: open
+            ? "translateX(-50%) translateY(8px)"
+            : "translateX(-50%) translateY(4px)",
+          opacity: open ? 1 : 0,
+          pointerEvents: open ? "auto" : "none",
+          transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+          width: wide ? 420 : 320,
+          padding: "12px",
+          borderRadius: 14,
+          background: "rgba(10, 10, 26, 0.95)",
+          backdropFilter: "blur(20px)",
+          WebkitBackdropFilter: "blur(20px)",
+          border: "1px solid rgba(147, 197, 253, 0.1)",
+          boxShadow: "0 20px 60px rgba(0,0,0,0.5), 0 0 30px rgba(147,197,253,0.05)",
+          zIndex: 200,
+          display: wide ? "grid" : "flex",
+          gridTemplateColumns: wide ? "1fr 1fr" : undefined,
+          flexDirection: wide ? undefined : "column",
+          gap: wide ? 4 : 0,
+        }}
+      >
+        {menu.items.map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            style={{
+              display: "flex",
+              alignItems: "flex-start",
+              gap: 10,
+              padding: wide ? "10px 12px" : "12px 14px",
+              borderRadius: 10,
+              textDecoration: "none",
+              transition: "all 0.2s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = `${item.color}10`;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "transparent";
+            }}
+          >
+            <div
+              style={{
+                width: 7,
+                height: 7,
+                borderRadius: "50%",
+                background: item.color,
+                marginTop: 5,
+                flexShrink: 0,
+                boxShadow: `0 0 8px ${item.color}40`,
+              }}
+            />
+            <div>
+              <div
+                style={{
+                  fontFamily: "var(--font-body, Outfit, sans-serif)",
+                  fontSize: wide ? 13 : 14,
+                  fontWeight: 600,
+                  color: "rgba(255,255,255,0.9)",
+                  marginBottom: 2,
+                  letterSpacing: 0.3,
+                }}
+              >
+                {item.label}
+              </div>
+              <div
+                style={{
+                  fontFamily: "var(--font-body, Outfit, sans-serif)",
+                  fontSize: 11,
+                  color: "rgba(255,255,255,0.4)",
+                  lineHeight: 1.4,
+                }}
+              >
+                {item.desc}
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ── Main Nav ── */
 
 interface NavProps {
   visible?: boolean;
@@ -53,14 +231,20 @@ export default function Nav({ visible = true, showToggle = false }: NavProps) {
       </div>
 
       <div className="hidden lg:flex items-center gap-9">
-        {links.map((l) => (
-          <a
+        {/* Dropdowns: Platform, Solutions, Verticals */}
+        {dropdowns.map((menu) => (
+          <NavDropdown key={menu.label} menu={menu} />
+        ))}
+
+        {/* Plain links: Case Studies, About */}
+        {plainLinks.map((l) => (
+          <Link
             key={l.label}
             href={l.href}
             className="font-body text-[13px] font-normal tracking-[1.5px] text-text-primary/70 uppercase transition-colors duration-300 hover:text-accent"
           >
             {l.label}
-          </a>
+          </Link>
         ))}
 
         {showToggle && <ThemeToggle />}
