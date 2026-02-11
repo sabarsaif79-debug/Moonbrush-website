@@ -1,16 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import PlatformLayout, {
-  useRevealOnScroll,
-  RevealGroup,
   GlassCard,
-  AnimStat,
   SectionDivider,
 } from "@/components/PlatformLayout";
-
-const ACCENT = "#93c5fd";
 
 /* ── Solution data ── */
 
@@ -37,27 +32,26 @@ const solutions = [
     capabilities: [
       {
         title: "PRISM Engine",
-        desc: "Takes your creative + brand guidelines + audience data → generates thousands of variants, each adapted to individual behavioral psychology. Language, visuals, color, tone, CTA — every dimension personalized.",
+        desc: "Takes your creative + brand guidelines + audience data → generates thousands of variants, each adapted to individual behavioral psychology.",
         color: "#c084fc",
       },
       {
         title: "Infrastructure Integration",
-        desc: "Direct connections into your data lakes, warehouses, CDPs, and enterprise platforms. Behavioral intelligence flows into existing workflows — not a bolt-on, part of your stack.",
+        desc: "Direct connections into your data lakes, warehouses, CDPs, and enterprise platforms. Behavioral intelligence flows into existing workflows.",
         color: "#6ee7b7",
       },
       {
         title: "Compliance Architecture",
-        desc: "HIPAA, SOC 2, ISO 27001, GDPR, CCPA maintained as standard. Not tiered, not add-on — every layer of the platform meets enterprise regulatory requirements.",
+        desc: "HIPAA, SOC 2, ISO 27001, GDPR, CCPA maintained as standard. Not tiered, not add-on — every layer meets enterprise regulatory requirements.",
         color: "#fcd34d",
       },
       {
         title: "Full Behavioral Stack",
-        desc: "Everything mid-market gets — enrichment, Builder, Workshop, Playbooks, multi-channel activation — plus PRISM and dedicated enterprise support teams.",
+        desc: "Everything mid-market gets — enrichment, Builder, Workshop, Playbooks, multi-channel activation — plus PRISM and dedicated enterprise support.",
         color: "#93c5fd",
       },
     ],
     cta: "Explore Enterprise",
-    href: "/contact?segment=enterprise",
   },
   {
     id: "midmarket",
@@ -73,42 +67,41 @@ const solutions = [
     ],
     painPoints: [
       "Demographic targeting is insufficient but behavioral science is out of budget",
-      "Enterprise competitors running hyper-personalized campaigns while you rely on broad segments",
-      "Marketing automation platforms underutilized — lack behavioral intelligence to power them",
-      "Multiple point solutions (data, intent, enrichment, ABM) without a unifying layer",
+      "Enterprise competitors running hyper-personalized campaigns",
+      "Marketing automation platforms underutilized without behavioral intelligence",
+      "Multiple point solutions without a unifying layer",
       "No budget for dedicated behavioral science or data science teams",
     ],
     capabilities: [
       {
         title: "Scientific Conversion Formula",
-        desc: "Playbooks analyze your audience across 54 dimensions and produce the optimal behavioral split — channel, offer, messaging, creative, timing — for each micro-cohort.",
+        desc: "Playbooks analyze your audience across 54 dimensions and produce the optimal behavioral split — channel, offer, messaging, creative, timing.",
         color: "#fcd34d",
       },
       {
         title: "Behavioral Science Team",
-        desc: "Dedicated behavioral scientists interpret data, design targeting strategies, translate insights into creative briefs, and advise on messaging psychology. No hire required.",
+        desc: "Dedicated behavioral scientists interpret data, design targeting strategies, translate insights into creative briefs. No hire required.",
         color: "#c084fc",
       },
       {
         title: "Solutions Architect",
-        desc: "A dedicated architect manages integration with Klaviyo, HubSpot, Salesforce, Mailchimp — any platform. New CRM integrations scoped and built within one week.",
+        desc: "A dedicated architect manages integration with Klaviyo, HubSpot, Salesforce, Mailchimp — any platform. New CRMs within one week.",
         color: "#6ee7b7",
       },
       {
         title: "Workshop Research Lab",
-        desc: "Twelve behavioral lenses provide instant audience analysis that would cost six figures from a consulting firm. Understand how your audience thinks, decides, and acts.",
+        desc: "Twelve behavioral lenses provide instant audience analysis that would cost six figures from a consulting firm.",
         color: "#93c5fd",
       },
     ],
     cta: "Explore Mid-Market",
-    href: "/contact?segment=midmarket",
   },
   {
     id: "smallbusiness",
-    eyebrow: "Small Business & Start-Ups",
+    eyebrow: "Small Business",
     title: "Fortune 500 data. Start-up pricing.",
     subtitle:
-      "The same 289M+ consumer graph that powers enterprise campaigns — at a flat monthly rate with zero per-record costs. Replace multiple vendor subscriptions with one platform.",
+      "The same 289M+ consumer graph that powers enterprise campaigns — at a flat monthly rate with zero per-record costs.",
     color: "#6ee7b7",
     stats: [
       { value: "$0", label: "Per-record cost" },
@@ -116,43 +109,42 @@ const solutions = [
       { value: "1", label: "Platform replaces many" },
     ],
     painPoints: [
-      "Paying $5k–$10k/month on per-record data lists from ZoomInfo, Apollo, Aristotle",
-      "Purchased data is incomplete, outdated, or locked behind credit systems",
+      "Paying $5k–$10k/month on per-record data lists",
+      "Purchased data is incomplete, outdated, or behind credit systems",
       "No access to behavioral or psychographic data at any price",
-      "Feeling locked out of sophisticated targeting — only enterprises can afford it",
-      "Managing multiple vendor relationships that fragment the data picture",
+      "Locked out of sophisticated targeting — only enterprises can afford it",
+      "Multiple vendor relationships that fragment the data picture",
     ],
     capabilities: [
       {
         title: "Flat-Rate Data Access",
-        desc: "The entire 289M consumer graph. Personal, professional, behavioral, intent, brand affinity — all included. No per-record charges, no credits, no add-on fees for emails or phone numbers.",
+        desc: "The entire 289M consumer graph. Personal, professional, behavioral, intent, brand affinity — all included. No per-record charges.",
         color: "#6ee7b7",
       },
       {
         title: "BCP Questionnaire",
-        desc: "Answer simple business questions — AI translates answers into sophisticated behavioral targeting. Enterprise-grade targeting accessible to anyone, no behavioral science expertise needed.",
+        desc: "Answer simple business questions — AI translates answers into sophisticated behavioral targeting. No expertise needed.",
         color: "#c084fc",
       },
       {
         title: "Existing Tool Integration",
-        desc: "Moonbrush plugs into Klaviyo, Mailchimp, HubSpot, Shopify — the tools you already use. No stack overhaul. It enriches and powers what you already have.",
+        desc: "Plugs into Klaviyo, Mailchimp, HubSpot, Shopify — the tools you already use. No stack overhaul.",
         color: "#93c5fd",
       },
       {
         title: "Multi-Vendor Replacement",
-        desc: "Instead of ZoomInfo for contacts, Bombora for intent, another tool for firmographics, and another for behavioral signals — get everything aggregated at one price.",
+        desc: "Replace ZoomInfo, Bombora, and multiple enrichment tools. Everything aggregated at one price.",
         color: "#fcd34d",
       },
     ],
     cta: "Explore Small Business",
-    href: "/contact?segment=smallbusiness",
   },
   {
     id: "agencies",
     eyebrow: "Agencies",
-    title: "In an era of agency skepticism, behavioral intelligence proves your value.",
+    title: "In an era of skepticism, behavioral intelligence proves your value.",
     subtitle:
-      "An out-of-the-box behavioral science team and data science team become part of your agency. Offer capabilities no competing agency can match.",
+      "An out-of-the-box behavioral science team and data science team become part of your agency.",
     color: "#fcd34d",
     stats: [
       { value: "2", label: "Embedded expert teams" },
@@ -169,34 +161,33 @@ const solutions = [
     capabilities: [
       {
         title: "Behavioral Science Team",
-        desc: "Interprets behavioral data, designs targeting strategies, translates profiles into creative briefs, advises on audience psychology. Yours to leverage across your entire client portfolio.",
+        desc: "Interprets behavioral data, designs targeting strategies, translates profiles into creative briefs across your entire client portfolio.",
         color: "#c084fc",
       },
       {
         title: "Data Science Team",
-        desc: "Handles behavioral modeling, audience segmentation, predictive analytics, Playbook optimization, and campaign analysis. Eliminates the need to hire your own data scientists.",
+        desc: "Handles behavioral modeling, audience segmentation, predictive analytics, and campaign analysis. No data scientists to hire.",
         color: "#93c5fd",
       },
       {
         title: "BCP for Client Kickoffs",
-        desc: "Use the guided questionnaire with clients in real time during kickoff meetings. Translates business language into behavioral targeting instantly — demonstrates immediate value.",
+        desc: "Use the guided questionnaire with clients in real time. Translates business language into behavioral targeting instantly.",
         color: "#fcd34d",
       },
       {
         title: "White-Label Intelligence",
-        desc: "Behavioral micro-cohorting, scientific Playbooks, and one-to-one creative personalization — capabilities that become part of your agency's offering without revealing the source.",
+        desc: "Behavioral micro-cohorting, scientific Playbooks, and personalized creative that become part of your agency's offering.",
         color: "#6ee7b7",
       },
     ],
     cta: "Explore Agency Model",
-    href: "/contact?segment=agency",
   },
   {
     id: "political",
-    eyebrow: "Political Campaigns",
+    eyebrow: "Political",
     title: "Politics is emotional. Target the psychology, not the zip code.",
     subtitle:
-      "Moonbrush was born from political campaign data. Behavioral intelligence meets voters where they actually make decisions — with tailored messaging across every touchpoint.",
+      "Moonbrush was born from political campaign data. Behavioral intelligence meets voters where they actually make decisions.",
     color: "#f87171",
     stats: [
       { value: "4", label: "Political outreach channels" },
@@ -213,34 +204,33 @@ const solutions = [
     capabilities: [
       {
         title: "Behavioral Voter Profiles",
-        desc: "Emotional responsiveness, value systems, civic identity, information consumption, decision-making styles, motivational drivers — the psychology behind the vote.",
+        desc: "Emotional responsiveness, value systems, civic identity, decision-making styles, motivational drivers — the psychology behind the vote.",
         color: "#f87171",
       },
       {
         title: "Cross-Channel Activation",
-        desc: "Block walking, phone banking, direct mail, DSP digital ads — each informed by individual behavioral intelligence. Tailored talking points at every door.",
+        desc: "Block walking, phone banking, direct mail, DSP digital ads — each informed by individual behavioral intelligence.",
         color: "#fcd34d",
       },
       {
         title: "Narrative Consistency",
-        desc: "Touchpoint tracking ensures the voter journey is coherent. A healthcare mail piece leads to healthcare digital ads, healthcare canvassing, and healthcare phone scripts.",
+        desc: "Touchpoint tracking ensures the voter journey is coherent across every channel and every contact.",
         color: "#93c5fd",
       },
       {
         title: "Real-Time Sentiment",
-        desc: "Detect shifts in voter sentiment as they happen through digital behavior and engagement signals — not weeks later when poll results arrive.",
+        desc: "Detect shifts in voter sentiment as they happen through digital behavior — not weeks later when polls arrive.",
         color: "#c084fc",
       },
     ],
     cta: "Explore Political",
-    href: "/contact?segment=political",
   },
   {
     id: "international",
     eyebrow: "International",
     title: "Where traditional data is scarce, behavior tells the story.",
     subtitle:
-      "Credit scoring for the unbanked. Insurance for populations without medical records. Behavioral intelligence bridges the gap between informal economies and formal services.",
+      "Credit scoring for the unbanked. Insurance for populations without medical records. Behavioral intelligence bridges the gap.",
     color: "#f0abfc",
     stats: [
       { value: "Global", label: "Consumer graph expansion" },
@@ -248,84 +238,134 @@ const solutions = [
       { value: "Billions", label: "Profiles worldwide" },
     ],
     painPoints: [
-      "Large populations with no credit history, limited banking, minimal employment docs",
-      "Traditional credit and actuarial models cannot evaluate these populations",
+      "Large populations with no credit history or formal employment docs",
+      "Traditional credit and actuarial models can't evaluate these populations",
       "Rich digital behavioral footprints exist but aren't being leveraged",
       "Financial inclusion blocked by lack of formal data infrastructure",
-      "Healthcare and insurance products can't be designed without behavioral data",
+      "Healthcare and insurance can't be designed without behavioral data",
     ],
     capabilities: [
       {
         title: "Alternative Credit Scoring",
-        desc: "Mobile usage patterns, digital commerce behavior, app usage, geographic stability — behavioral signals that predict creditworthiness where traditional scoring can't reach.",
+        desc: "Mobile usage, digital commerce, app usage, geographic stability — behavioral signals that predict creditworthiness.",
         color: "#6ee7b7",
       },
       {
         title: "Insurance Underwriting",
-        desc: "Health behavior patterns, lifestyle indicators, risk-taking behavior, and community health signals inform product design for populations without formal medical histories.",
+        desc: "Health behavior patterns, lifestyle indicators, risk-taking behavior for populations without formal medical histories.",
         color: "#93c5fd",
       },
       {
         title: "Healthcare Intelligence",
-        desc: "Identify health-seeking behaviors, wellness engagement, preventive care adoption, and community health trends through digital behavioral signals.",
+        desc: "Health-seeking behaviors, wellness engagement, preventive care adoption, and community health trends.",
         color: "#c084fc",
       },
       {
         title: "Telecom Intelligence",
-        desc: "Predict churn, identify upsell opportunities, and create behavioral segments in mobile-first markets — far beyond basic usage metrics.",
+        desc: "Predict churn, identify upsell opportunities, create behavioral segments in mobile-first markets.",
         color: "#fcd34d",
       },
     ],
     cta: "Explore International",
-    href: "/contact?segment=international",
   },
 ];
 
-/* ── Sticky section nav items ── */
-const sectionNavItems = solutions.map((s) => ({
-  id: s.id,
-  label: s.eyebrow,
-  color: s.color,
-}));
+/* ── Component ── */
 
 export default function SolutionsPage() {
   const [loaded, setLoaded] = useState(false);
-  const [activeSection, setActiveSection] = useState("");
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [exitingIndex, setExitingIndex] = useState<number | null>(null);
+  const [exitTransform, setExitTransform] = useState("rotateX(0)");
+  const [exitOrigin, setExitOrigin] = useState("bottom center");
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  const touchStart = useRef({ x: 0, y: 0 });
+  const pillScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setTimeout(() => setLoaded(true), 200);
   }, []);
 
-  /* Track which section is in view */
+  /* ── Navigate between walls ── */
+  const navigateTo = useCallback(
+    (index: number) => {
+      if (index === activeIndex || isTransitioning || index < 0 || index >= solutions.length)
+        return;
+
+      const goingRight = index > activeIndex;
+
+      setExitingIndex(activeIndex);
+      setExitOrigin(goingRight ? "bottom center" : "top center");
+      setExitTransform("rotateX(0)");
+      setIsTransitioning(true);
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setExitTransform(goingRight ? "rotateX(-90deg)" : "rotateX(90deg)");
+        });
+      });
+
+      setActiveIndex(index);
+
+      setTimeout(() => {
+        setIsTransitioning(false);
+        setExitingIndex(null);
+      }, 700);
+    },
+    [activeIndex, isTransitioning]
+  );
+
+  /* ── Scroll active pill into view ── */
   useEffect(() => {
-    const observers: IntersectionObserver[] = [];
-    solutions.forEach((s) => {
-      const el = document.getElementById(s.id);
-      if (!el) return;
-      const obs = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) setActiveSection(s.id);
-        },
-        { threshold: 0.3 }
-      );
-      obs.observe(el);
-      observers.push(obs);
-    });
-    return () => observers.forEach((o) => o.disconnect());
-  }, []);
+    if (!pillScrollRef.current) return;
+    const container = pillScrollRef.current;
+    const activeBtn = container.children[activeIndex] as HTMLElement;
+    if (!activeBtn) return;
+    const left = activeBtn.offsetLeft - container.offsetWidth / 2 + activeBtn.offsetWidth / 2;
+    container.scrollTo({ left, behavior: "smooth" });
+  }, [activeIndex]);
+
+  /* ── Touch swipe on walls ── */
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const dx = e.changedTouches[0].clientX - touchStart.current.x;
+    const dy = e.changedTouches[0].clientY - touchStart.current.y;
+
+    // Firm threshold: >100px horizontal, and horizontal > 2.5x vertical
+    if (Math.abs(dx) > 100 && Math.abs(dx) > Math.abs(dy) * 2.5) {
+      if (dx < 0) navigateTo(activeIndex + 1);
+      else navigateTo(activeIndex - 1);
+    }
+  };
+
+  /* ── Keyboard nav ── */
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight") navigateTo(activeIndex + 1);
+      if (e.key === "ArrowLeft") navigateTo(activeIndex - 1);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [activeIndex, navigateTo]);
+
+  const activeSol = solutions[activeIndex];
 
   return (
-    <PlatformLayout accentColor={ACCENT}>
-      {/* ─── HERO ─── */}
+    <PlatformLayout accentColor="#93c5fd">
+      {/* ═══ HERO ═══ */}
       <section
         style={{
-          minHeight: "100vh",
+          minHeight: "80vh",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
           textAlign: "center",
-          padding: "140px clamp(20px,6vw,80px) 80px",
+          padding: "140px clamp(20px,6vw,80px) 60px",
         }}
       >
         <div
@@ -385,97 +425,458 @@ export default function SolutionsPage() {
             where you are.
           </p>
         </div>
-
-        {/* Jump nav */}
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            justifyContent: "center",
-            gap: 10,
-            marginTop: 50,
-            opacity: loaded ? 1 : 0,
-            transform: loaded ? "none" : "translateY(16px)",
-            transition: "all 1s cubic-bezier(0.16, 1, 0.3, 1) 0.8s",
-          }}
-        >
-          {sectionNavItems.map((item) => (
-            <a
-              key={item.id}
-              href={`#${item.id}`}
-              style={{
-                padding: "8px 18px",
-                borderRadius: 24,
-                background: "var(--t-card-bg)",
-                border: `1px solid ${item.color}25`,
-                fontFamily: "var(--font-body)",
-                fontSize: 12,
-                fontWeight: 600,
-                letterSpacing: 1,
-                textTransform: "uppercase",
-                color: item.color,
-                textDecoration: "none",
-                transition: "all 0.3s ease",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = item.color + "15";
-                e.currentTarget.style.borderColor = item.color + "40";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "var(--t-card-bg)";
-                e.currentTarget.style.borderColor = item.color + "25";
-              }}
-            >
-              {item.label}
-            </a>
-          ))}
-        </div>
       </section>
 
-      {/* ─── SOLUTION SECTIONS ─── */}
-      {solutions.map((sol, idx) => (
-        <SolutionSection key={sol.id} sol={sol} idx={idx} />
-      ))}
+      {/* ═══ STICKY SECTION: PILLS + WALLS ═══ */}
+      <div style={{ minHeight: "150vh" }}>
+        <div
+          style={{
+            position: "sticky",
+            top: 56,
+            zIndex: 40,
+            height: "calc(100vh - 56px)",
+            display: "flex",
+            flexDirection: "column",
+            background: "var(--t-bg)",
+          }}
+        >
+          {/* ── PILL NAV ── */}
+          <div
+            style={{
+              background: "var(--t-bg)",
+              backdropFilter: "blur(20px)",
+              WebkitBackdropFilter: "blur(20px)",
+              borderBottom: "1px solid var(--t-border)",
+              flexShrink: 0,
+            }}
+          >
+            {/* Hide scrollbar CSS */}
+            <style>{`
+              .pill-scroll::-webkit-scrollbar { display: none; }
+            `}</style>
 
-      {/* ─── CROSS-CUTTING BOTTOM ─── */}
-      <section style={{ padding: "80px clamp(20px,6vw,80px) 120px", maxWidth: 1200, margin: "0 auto" }}>
-        <SectionDivider color={ACCENT} />
+            <div
+              ref={pillScrollRef}
+              className="pill-scroll"
+              style={{
+                display: "flex",
+                gap: 8,
+                padding: "12px clamp(20px,6vw,80px)",
+                overflowX: "auto",
+                WebkitOverflowScrolling: "touch",
+                scrollbarWidth: "none",
+              }}
+            >
+              {solutions.map((sol, i) => (
+                <button
+                  key={sol.id}
+                  onClick={() => navigateTo(i)}
+                  style={{
+                    padding: "8px 18px",
+                    borderRadius: 24,
+                    background: i === activeIndex ? sol.color + "20" : "transparent",
+                    border: `1.5px solid ${i === activeIndex ? sol.color : "var(--t-border)"}`,
+                    color: i === activeIndex ? sol.color : "var(--t-text-faint)",
+                    fontFamily: "var(--font-body)",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    letterSpacing: 1,
+                    textTransform: "uppercase",
+                    cursor: "pointer",
+                    whiteSpace: "nowrap",
+                    flexShrink: 0,
+                    transition: "all 0.3s ease",
+                  }}
+                >
+                  {sol.eyebrow}
+                </button>
+              ))}
+            </div>
 
-        <div style={{ textAlign: "center", marginTop: 60, marginBottom: 60 }}>
-          <RevealGroup stagger={0.12} direction="up">
-            {[
+            {/* Progress indicator */}
+            <div style={{ height: 2, background: "var(--t-border)" }}>
               <div
-                key="tag"
                 style={{
-                  fontFamily: "var(--font-body)",
-                  fontSize: 11,
-                  letterSpacing: 4,
-                  textTransform: "uppercase",
-                  color: "var(--t-accent)",
-                  opacity: 0.7,
-                  marginBottom: 12,
+                  height: "100%",
+                  width: `${((activeIndex + 1) / solutions.length) * 100}%`,
+                  background: activeSol.color,
+                  transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+                  opacity: 0.6,
+                }}
+              />
+            </div>
+          </div>
+
+          {/* ── WALL CONTAINER ── */}
+          <div
+            style={{
+              position: "relative",
+              flex: 1,
+              perspective: 1500,
+              perspectiveOrigin: "center center",
+              overflow: "hidden",
+            }}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
+        {solutions.map((sol, i) => {
+          const isActive = i === activeIndex;
+          const isExiting = isTransitioning && i === exitingIndex;
+          const isVisible = isActive || isExiting;
+
+          return (
+            <div
+              key={sol.id}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                overflowY: isActive && !isTransitioning ? "auto" : "hidden",
+                WebkitOverflowScrolling: "touch",
+                background: "var(--t-bg)",
+                backfaceVisibility: "hidden",
+                zIndex: isExiting ? 10 : isActive ? 5 : 1,
+                opacity: isVisible ? 1 : 0,
+                pointerEvents: isActive && !isTransitioning ? "auto" : "none",
+                transform: isExiting ? exitTransform : "rotateX(0)",
+                transformOrigin: isExiting ? exitOrigin : "center center",
+                transition: isExiting
+                  ? "transform 0.7s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.7s ease"
+                  : "none",
+                willChange: isExiting ? "transform" : "auto",
+              }}
+            >
+              {/* ── Wall content ── */}
+              <div
+                style={{
+                  padding: "50px clamp(20px,6vw,80px) 60px",
+                  maxWidth: 1200,
+                  margin: "0 auto",
                 }}
               >
-                Across Every Solution
-              </div>,
-              <h2
-                key="h2"
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontSize: "clamp(28px, 3.5vw, 44px)",
-                  fontWeight: 700,
-                  lineHeight: 1.15,
-                  color: "var(--t-text)",
-                  marginBottom: 16,
-                }}
-              >
-                The behavioral intelligence difference.
-              </h2>,
-            ]}
-          </RevealGroup>
+                {/* Header */}
+                <div style={{ marginBottom: 30 }}>
+                  <div
+                    style={{
+                      fontFamily: "var(--font-body)",
+                      fontSize: 11,
+                      letterSpacing: 4,
+                      textTransform: "uppercase",
+                      color: sol.color,
+                      opacity: 0.7,
+                      marginBottom: 10,
+                    }}
+                  >
+                    {sol.eyebrow}
+                  </div>
+                  <h2
+                    style={{
+                      fontFamily: "var(--font-display)",
+                      fontSize: "clamp(26px, 3.5vw, 40px)",
+                      fontWeight: 700,
+                      lineHeight: 1.15,
+                      color: "var(--t-text)",
+                      maxWidth: 650,
+                      marginBottom: 12,
+                    }}
+                  >
+                    {sol.title}
+                  </h2>
+                  <p
+                    style={{
+                      fontFamily: "var(--font-body)",
+                      fontSize: 14,
+                      lineHeight: 1.7,
+                      color: "var(--t-text-muted)",
+                      maxWidth: 580,
+                    }}
+                  >
+                    {sol.subtitle}
+                  </p>
+                </div>
+
+                {/* Stats row */}
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "clamp(20px, 4vw, 40px)",
+                    marginBottom: 36,
+                    flexWrap: "wrap",
+                  }}
+                >
+                  {sol.stats.map((s) => (
+                    <div key={s.label}>
+                      <div
+                        style={{
+                          fontFamily: "var(--font-display)",
+                          fontSize: "clamp(24px, 3vw, 32px)",
+                          fontWeight: 800,
+                          color: sol.color,
+                          lineHeight: 1,
+                        }}
+                      >
+                        {s.value}
+                      </div>
+                      <div
+                        style={{
+                          fontFamily: "var(--font-body)",
+                          fontSize: 11,
+                          letterSpacing: 1,
+                          textTransform: "uppercase",
+                          color: "var(--t-text-faint)",
+                          marginTop: 4,
+                        }}
+                      >
+                        {s.label}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Horizontal card carousel */}
+                <style>{`
+                  .card-scroll::-webkit-scrollbar { display: none; }
+                `}</style>
+                <div
+                  className="card-scroll"
+                  style={{
+                    display: "flex",
+                    gap: 16,
+                    overflowX: "auto",
+                    WebkitOverflowScrolling: "touch",
+                    scrollbarWidth: "none",
+                    scrollSnapType: "x mandatory",
+                    paddingBottom: 8,
+                  }}
+                  /* Stop card-scroll touches from triggering wall swipe */
+                  onTouchStart={(e) => e.stopPropagation()}
+                  onTouchEnd={(e) => e.stopPropagation()}
+                >
+                  {/* Pain points card */}
+                  <div
+                    style={{
+                      minWidth: "min(360px, 85vw)",
+                      maxWidth: 400,
+                      flexShrink: 0,
+                      scrollSnapAlign: "start",
+                      padding: "clamp(16px, 3vw, 28px)",
+                      borderRadius: 16,
+                      background: "var(--t-card-bg)",
+                      border: `1px solid ${sol.color}15`,
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontFamily: "var(--font-body)",
+                        fontSize: 11,
+                        letterSpacing: 3,
+                        textTransform: "uppercase",
+                        color: sol.color,
+                        opacity: 0.7,
+                        marginBottom: 14,
+                      }}
+                    >
+                      Pain Points We Solve
+                    </div>
+                    {sol.painPoints.map((pp, j) => (
+                      <div
+                        key={j}
+                        style={{
+                          display: "flex",
+                          alignItems: "flex-start",
+                          gap: 8,
+                          padding: "7px 0",
+                          borderBottom:
+                            j < sol.painPoints.length - 1
+                              ? "1px solid var(--t-border)"
+                              : "none",
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: 5,
+                            height: 5,
+                            borderRadius: "50%",
+                            background: sol.color,
+                            marginTop: 7,
+                            flexShrink: 0,
+                            opacity: 0.5,
+                          }}
+                        />
+                        <span
+                          style={{
+                            fontFamily: "var(--font-body)",
+                            fontSize: 13,
+                            lineHeight: 1.55,
+                            color: "var(--t-text-muted)",
+                          }}
+                        >
+                          {pp}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Capability cards */}
+                  {sol.capabilities.map((cap) => (
+                    <div
+                      key={cap.title}
+                      style={{
+                        minWidth: "min(300px, 80vw)",
+                        maxWidth: 340,
+                        flexShrink: 0,
+                        scrollSnapAlign: "start",
+                        padding: "clamp(16px, 3vw, 28px)",
+                        borderRadius: 16,
+                        background: "var(--t-card-bg)",
+                        border: `1px solid ${cap.color}15`,
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontFamily: "var(--font-display)",
+                          fontSize: 17,
+                          fontWeight: 700,
+                          color: cap.color,
+                          marginBottom: 10,
+                        }}
+                      >
+                        {cap.title}
+                      </div>
+                      <p
+                        style={{
+                          fontFamily: "var(--font-body)",
+                          fontSize: 13,
+                          lineHeight: 1.65,
+                          color: "var(--t-text-faint)",
+                          margin: 0,
+                          flex: 1,
+                        }}
+                      >
+                        {cap.desc}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Scroll hint */}
+                <div
+                  style={{
+                    fontFamily: "var(--font-body)",
+                    fontSize: 11,
+                    color: "var(--t-text-faint)",
+                    opacity: 0.4,
+                    marginTop: 8,
+                    letterSpacing: 1,
+                  }}
+                >
+                  ← swipe cards →
+                </div>
+
+                {/* CTA */}
+                <div style={{ marginTop: 28 }}>
+                  <Link
+                    href="/contact"
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 8,
+                      padding: "12px 28px",
+                      borderRadius: 10,
+                      background: sol.color,
+                      color: "#0a0a1a",
+                      fontFamily: "var(--font-body)",
+                      fontSize: 14,
+                      fontWeight: 600,
+                      letterSpacing: 0.5,
+                      textDecoration: "none",
+                      transition: "all 0.3s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.boxShadow = `0 0 30px ${sol.color}40`;
+                      e.currentTarget.style.transform = "translateY(-2px)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.boxShadow = "none";
+                      e.currentTarget.style.transform = "none";
+                    }}
+                  >
+                    {sol.cta}
+                    <span style={{ fontSize: 16 }}>→</span>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+          </div>{/* end wall container */}
+
+          {/* Swipe hint inside sticky */}
+          <div
+            style={{
+              textAlign: "center",
+              padding: "8px 20px",
+              fontFamily: "var(--font-body)",
+              fontSize: 11,
+              color: "var(--t-text-faint)",
+              opacity: 0.3,
+              letterSpacing: 2,
+              flexShrink: 0,
+            }}
+          >
+            ← swipe or use arrows to navigate sections →
+          </div>
+        </div>{/* end sticky wrapper */}
+      </div>{/* end 300vh outer wrapper */}
+
+      {/* ═══ CROSS-CUTTING BOTTOM ═══ */}
+      <section
+        style={{
+          padding: "80px clamp(20px,6vw,80px) 120px",
+          maxWidth: 1200,
+          margin: "0 auto",
+        }}
+      >
+        <SectionDivider color="#93c5fd" />
+
+        <div style={{ textAlign: "center", marginTop: 60, marginBottom: 50 }}>
+          <div
+            style={{
+              fontFamily: "var(--font-body)",
+              fontSize: 11,
+              letterSpacing: 4,
+              textTransform: "uppercase",
+              color: "var(--t-accent)",
+              opacity: 0.7,
+              marginBottom: 12,
+            }}
+          >
+            Across Every Solution
+          </div>
+          <h2
+            style={{
+              fontFamily: "var(--font-display)",
+              fontSize: "clamp(28px, 3.5vw, 44px)",
+              fontWeight: 700,
+              lineHeight: 1.15,
+              color: "var(--t-text)",
+            }}
+          >
+            The behavioral intelligence difference.
+          </h2>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(260px, 100%), 1fr))",
+            gap: 16,
+          }}
+        >
           {[
             {
               title: "10 Years in the Making",
@@ -497,8 +898,8 @@ export default function SolutionsPage() {
               desc: "No per-record pricing. No credit systems. Unlimited access to the full consumer graph and behavioral intelligence at a predictable monthly cost.",
               color: "#fcd34d",
             },
-          ].map((item, i) => (
-            <GlassCard key={item.title} color={item.color} delay={i * 0.1}>
+          ].map((item) => (
+            <GlassCard key={item.title} color={item.color}>
               <div
                 style={{
                   fontFamily: "var(--font-display)",
@@ -526,221 +927,5 @@ export default function SolutionsPage() {
         </div>
       </section>
     </PlatformLayout>
-  );
-}
-
-/* ── Individual solution section ── */
-function SolutionSection({ sol, idx }: { sol: (typeof solutions)[number]; idx: number }) {
-  const hero = useRevealOnScroll(0.15);
-
-  return (
-    <section
-      id={sol.id}
-      style={{
-        padding: "100px clamp(20px,6vw,80px) 80px",
-        maxWidth: 1200,
-        margin: "0 auto",
-        scrollMarginTop: 80,
-      }}
-    >
-      <SectionDivider color={sol.color} />
-
-      {/* Header */}
-      <div
-        ref={hero.ref}
-        style={{
-          marginTop: 60,
-          marginBottom: 50,
-          opacity: hero.visible ? 1 : 0,
-          transform: hero.visible ? "none" : "translateY(30px)",
-          transition: "all 0.8s cubic-bezier(0.16, 1, 0.3, 1)",
-        }}
-      >
-        <div
-          style={{
-            fontFamily: "var(--font-body)",
-            fontSize: 11,
-            letterSpacing: 4,
-            textTransform: "uppercase",
-            color: sol.color,
-            opacity: 0.7,
-            marginBottom: 14,
-          }}
-        >
-          {sol.eyebrow}
-        </div>
-        <h2
-          style={{
-            fontFamily: "var(--font-display)",
-            fontSize: "clamp(28px, 3.5vw, 44px)",
-            fontWeight: 700,
-            lineHeight: 1.15,
-            color: "var(--t-text)",
-            maxWidth: 700,
-            marginBottom: 16,
-          }}
-        >
-          {sol.title}
-        </h2>
-        <p
-          style={{
-            fontFamily: "var(--font-body)",
-            fontSize: 15,
-            lineHeight: 1.75,
-            color: "var(--t-text-muted)",
-            maxWidth: 620,
-          }}
-        >
-          {sol.subtitle}
-        </p>
-      </div>
-
-      {/* Stats row */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
-          gap: 24,
-          maxWidth: 500,
-          marginBottom: 50,
-        }}
-      >
-        {sol.stats.map((s) => (
-          <AnimStat key={s.label} value={s.value} label={s.label} color={sol.color} />
-        ))}
-      </div>
-
-      {/* Two-column: Pain points + Capabilities */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(min(340px, 100%), 1fr))",
-          gap: 30,
-          alignItems: "start",
-        }}
-      >
-        {/* Pain points */}
-        <GlassCard color={sol.color} delay={0.1}>
-          <div
-            style={{
-              fontFamily: "var(--font-body)",
-              fontSize: 11,
-              letterSpacing: 3,
-              textTransform: "uppercase",
-              color: sol.color,
-              opacity: 0.7,
-              marginBottom: 18,
-            }}
-          >
-            Pain Points We Solve
-          </div>
-          {sol.painPoints.map((pp, i) => (
-            <div
-              key={i}
-              style={{
-                display: "flex",
-                alignItems: "flex-start",
-                gap: 10,
-                padding: "10px 0",
-                borderBottom:
-                  i < sol.painPoints.length - 1
-                    ? "1px solid var(--t-border)"
-                    : "none",
-              }}
-            >
-              <div
-                style={{
-                  width: 6,
-                  height: 6,
-                  borderRadius: "50%",
-                  background: sol.color,
-                  marginTop: 7,
-                  flexShrink: 0,
-                  opacity: 0.6,
-                }}
-              />
-              <span
-                style={{
-                  fontFamily: "var(--font-body)",
-                  fontSize: 14,
-                  lineHeight: 1.6,
-                  color: "var(--t-text-muted)",
-                }}
-              >
-                {pp}
-              </span>
-            </div>
-          ))}
-        </GlassCard>
-
-        {/* Capabilities */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-          {sol.capabilities.map((cap, i) => (
-            <GlassCard key={cap.title} color={cap.color} delay={0.15 + i * 0.08}>
-              <div
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontSize: 16,
-                  fontWeight: 700,
-                  color: cap.color,
-                  marginBottom: 6,
-                }}
-              >
-                {cap.title}
-              </div>
-              <p
-                style={{
-                  fontFamily: "var(--font-body)",
-                  fontSize: 13,
-                  lineHeight: 1.65,
-                  color: "var(--t-text-faint)",
-                  margin: 0,
-                }}
-              >
-                {cap.desc}
-              </p>
-            </GlassCard>
-          ))}
-        </div>
-      </div>
-
-      {/* CTA */}
-      <div style={{ marginTop: 40 }}>
-        <RevealGroup stagger={0.1} direction="up">
-          {[
-            <Link
-              key="cta"
-              href="/contact"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 8,
-                padding: "12px 28px",
-                borderRadius: 10,
-                background: sol.color,
-                color: "#0a0a1a",
-                fontFamily: "var(--font-body)",
-                fontSize: 14,
-                fontWeight: 600,
-                letterSpacing: 0.5,
-                textDecoration: "none",
-                transition: "all 0.3s ease",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.boxShadow = `0 0 30px ${sol.color}40`;
-                e.currentTarget.style.transform = "translateY(-2px)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.boxShadow = "none";
-                e.currentTarget.style.transform = "none";
-              }}
-            >
-              {sol.cta}
-              <span style={{ fontSize: 16 }}>→</span>
-            </Link>,
-          ]}
-        </RevealGroup>
-      </div>
-    </section>
   );
 }

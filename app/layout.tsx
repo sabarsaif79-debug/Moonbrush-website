@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { siteMetadata } from "./site-metadata";
+export const metadata = siteMetadata;
 
 export const metadata: Metadata = {
   title: "Moonbrush | Personalization at Scale",
